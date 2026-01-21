@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("USER")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  // Relations
+  ordersAsCustomer Order[] @relation("CustomerOrders")
+  ordersAsDriver   Order[] @relation("DriverOrders")
+
+  @@map("users")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  // Relations
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  categoryId  String
+  name        String
+  description String
+  price       Float
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  category   Category    @relation(fields: [categoryId], references: [id])
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+model Reservation {
+  id           String            @id @default(uuid())
+  customerName String
+  phone        String
+  datetime     DateTime
+  guests       Int
+  note         String?
+  status       String @default("NEW")
+  createdAt    DateTime          @default(now())
+
+  @@map("reservations")
+}
+
+model Order {
+  id               String      @id @default(uuid())
+  customerId       String?
+  customerName     String
+  phone            String
+  address          String
+  note             String?
+  total            Float
+  status           String @default("PENDING")
+  assignedDriverId String?
+  createdAt        DateTime    @default(now())
+
+  // Relations
+  customer       User?       @relation("CustomerOrders", fields: [customerId], references: [id])
+  assignedDriver User?       @relation("DriverOrders", fields: [assignedDriverId], references: [id])
+  items          OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  qty       Int
+  price     Float
+  createdAt DateTime @default(now())
+
+  // Relations
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model HomeBanner {
+  id        String   @id @default(uuid())
+  title     String
+  subtitle  String?
+  imageUrl  String
+  ctaText   String?
+  ctaLink   String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("home_banners")
+}
+
+model HomeVideo {
+  id        String   @id @default(uuid())
+  videoUrl  String
+  isActive  Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+
+  @@map("home_videos")
+}
+
+model AboutSection {
+  id        String   @id @default(uuid())
+  heading   String
+  content   String
+  imageUrl  String?
+  updatedAt DateTime @updatedAt
+
+  @@map("about_sections")
+}
+
+// SQLite doesn't support enums, using String instead
+// Valid Role values: ADMIN, DRIVER, USER
+// Valid ReservationStatus values: NEW, CONFIRMED, COMPLETED, CANCELED
+// Valid OrderStatus values: PENDING, CONFIRMED, PREPARING, READY, DELIVERING, COMPLETED, CANCELED

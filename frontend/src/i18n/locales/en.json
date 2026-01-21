@@ -1,0 +1,141 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "orders": "Orders",
+        "menus": "Menus",
+        "customers": "Customers",
+        "analytics": "Analytics",
+        "settings": "Settings",
+        "content": "Content"
+    },
+    "dashboard": {
+        "title": "Overview",
+        "welcome": "Welcome to Admin Panel",
+        "subtitle": "Use the sidebar to manage your restaurant.",
+        "kpi": {
+            "totalCategories": "Total Categories",
+            "totalProducts": "Total Products",
+            "totalOrders": "Total Orders",
+            "reservations": "Reservations"
+        },
+        "quickActions": {
+            "title": "Quick Actions",
+            "addProduct": "Add New Product",
+            "addProductDesc": "Create new menu item",
+            "manageOrders": "Manage Orders",
+            "manageOrdersDesc": "View and process orders",
+            "viewCustomers": "View Customers",
+            "viewCustomersDesc": "Manage customer info"
+        }
+    },
+    "common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add New",
+        "search": "Search...",
+        "actions": "Actions",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "confirm": "Confirm",
+        "retry": "Retry",
+        "error": "Error occurred",
+        "success": "Success",
+        "preview": "Preview",
+        "imagePreview": "Image Preview"
+    },
+    "auth": {
+        "loginTitle": "Sign In",
+        "loginSubtitle": "Sign in to manage restaurant",
+        "email": "Email",
+        "password": "Password",
+        "loginButton": "Sign In",
+        "loggingIn": "Signing in...",
+        "logout": "Logout"
+    },
+    "categories": {
+        "title": "Category Management",
+        "addTitle": "Add Category",
+        "editTitle": "Edit Category",
+        "name": "Category Name",
+        "productsCount": "Products Count"
+    },
+    "products": {
+        "title": "Product Management",
+        "addProduct": "Add Product",
+        "editProduct": "Edit Product",
+        "name": "Product Name",
+        "description": "Description",
+        "price": "Price",
+        "category": "Category",
+        "image": "Image",
+        "featured": "Featured",
+        "featuredDesc": "Show on homepage"
+    },
+    "orders": {
+        "title": "Order Management",
+        "id": "Order ID",
+        "customer": "Customer",
+        "amount": "Total Amount",
+        "date": "Date",
+        "driver": "Driver",
+        "assignDriver": "Assign Driver",
+        "status": {
+            "PENDING": "Pending",
+            "CONFIRMED": "Confirmed",
+            "PREPARING": "Preparing",
+            "READY": "Ready",
+            "DELIVERING": "Delivering",
+            "COMPLETED": "Completed",
+            "CANCELLED": "Cancelled"
+        }
+    },
+    "reservations": {
+        "title": "Reservation Management",
+        "date": "Date",
+        "time": "Time",
+        "guests": "Guests",
+        "notes": "Notes",
+        "status": {
+            "PENDING": "Pending",
+            "CONFIRMED": "Confirmed",
+            "COMPLETED": "Completed",
+            "CANCELLED": "Cancelled"
+        }
+    },
+    "drivers": {
+        "title": "Driver Management",
+        "addDriver": "Add Driver",
+        "name": "Full Name",
+        "phone": "Phone",
+        "activeStatus": "Active Status"
+    },
+    "content": {
+        "banners": {
+            "title": "Banner Management",
+            "subtitle": "Homepage Hero Banners",
+            "add": "Add Banner",
+            "heading": "Heading",
+            "subheading": "Subheading",
+            "ctaText": "CTA Text",
+            "ctaLink": "CTA Link",
+            "order": "Order"
+        },
+        "video": {
+            "title": "Video Management",
+            "subtitle": "Homepage Introduction Video",
+            "url": "Video URL (Youtube/Vimeo)",
+            "current": "Current Video"
+        },
+        "about": {
+            "title": "About Us",
+            "subtitle": "About Section Content",
+            "heading": "Heading",
+            "content": "Content",
+            "image": "Image"
+        }
+    }
+}

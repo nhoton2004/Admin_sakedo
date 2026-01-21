@@ -1,0 +1,141 @@
+{
+    "nav": {
+        "dashboard": "Tổng quan",
+        "orders": "Đơn hàng",
+        "menus": "Thực đơn",
+        "customers": "Khách hàng",
+        "analytics": "Thống kê",
+        "settings": "Cài đặt",
+        "content": "Nội dung"
+    },
+    "dashboard": {
+        "title": "Tổng quan",
+        "welcome": "Chào mừng đến trang quản trị",
+        "subtitle": "Sử dụng menu bên trái để quản lý nhà hàng.",
+        "kpi": {
+            "totalCategories": "Tổng danh mục",
+            "totalProducts": "Tổng sản phẩm",
+            "totalOrders": "Tổng đơn hàng",
+            "reservations": "Đặt bàn"
+        },
+        "quickActions": {
+            "title": "Thao tác nhanh",
+            "addProduct": "Thêm món mới",
+            "addProductDesc": "Tạo món ăn mới cho menu",
+            "manageOrders": "Quản lý đơn hàng",
+            "manageOrdersDesc": "Xem và xử lý đơn hàng",
+            "viewCustomers": "Xem khách hàng",
+            "viewCustomersDesc": "Quản lý thông tin khách"
+        }
+    },
+    "common": {
+        "loading": "Đang tải...",
+        "save": "Lưu lại",
+        "cancel": "Hủy bỏ",
+        "delete": "Xóa",
+        "edit": "Chỉnh sửa",
+        "add": "Thêm mới",
+        "search": "Tìm kiếm...",
+        "actions": "Thao tác",
+        "status": "Trạng thái",
+        "active": "Hoạt động",
+        "inactive": "Ngừng hoạt động",
+        "confirm": "Xác nhận",
+        "retry": "Thử lại",
+        "error": "Có lỗi xảy ra",
+        "success": "Thành công",
+        "preview": "Xem trước",
+        "imagePreview": "Xem trước hình ảnh"
+    },
+    "auth": {
+        "loginTitle": "Đăng Nhập",
+        "loginSubtitle": "Đăng nhập để quản lý nhà hàng",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "loginButton": "Đăng nhập",
+        "loggingIn": "Đang đăng nhập...",
+        "logout": "Đăng xuất"
+    },
+    "categories": {
+        "title": "Quản lý Danh mục",
+        "addTitle": "Thêm Danh Mục",
+        "editTitle": "Sửa Danh Mục",
+        "name": "Tên danh mục",
+        "productsCount": "Số sản phẩm"
+    },
+    "products": {
+        "title": "Quản lý Sản phẩm",
+        "addProduct": "Thêm Sản Phẩm",
+        "editProduct": "Sửa Sản Phẩm",
+        "name": "Tên món",
+        "description": "Mô tả chi tiết",
+        "price": "Giá bán",
+        "category": "Danh mục",
+        "image": "Hình ảnh",
+        "featured": "Nổi bật",
+        "featuredDesc": "Sản phẩm nột bật trang chủ"
+    },
+    "orders": {
+        "title": "Quản lý Đơn hàng",
+        "id": "Mã đơn",
+        "customer": "Khách hàng",
+        "amount": "Tổng tiền",
+        "date": "Ngày đặt",
+        "driver": "Tài xế",
+        "assignDriver": "Gán tài xế",
+        "status": {
+            "PENDING": "Chờ xác nhận",
+            "CONFIRMED": "Đã xác nhận",
+            "PREPARING": "Đang chuẩn bị",
+            "READY": "Đã xong",
+            "DELIVERING": "Đang giao",
+            "COMPLETED": "Hoàn thành",
+            "CANCELLED": "Đã hủy"
+        }
+    },
+    "reservations": {
+        "title": "Quản lý Đặt bàn",
+        "date": "Ngày",
+        "time": "Giờ",
+        "guests": "Số khách",
+        "notes": "Ghi chú",
+        "status": {
+            "PENDING": "Chờ xác nhận",
+            "CONFIRMED": "Đã xác nhận",
+            "COMPLETED": "Hoàn thành",
+            "CANCELLED": "Đã hủy"
+        }
+    },
+    "drivers": {
+        "title": "Quản lý Tài xế",
+        "addDriver": "Thêm Tài Xế",
+        "name": "Họ tên",
+        "phone": "Điện thoại",
+        "activeStatus": "Trạng thái hoạt động"
+    },
+    "content": {
+        "banners": {
+            "title": "Quản lý Banner",
+            "subtitle": "Banner hiển thị trang chủ",
+            "add": "Thêm Banner",
+            "heading": "Tiêu đề chính",
+            "subheading": "Tiêu đề phụ",
+            "ctaText": "Nút kêu gọi",
+            "ctaLink": "Link nút",
+            "order": "Thứ tự"
+        },
+        "video": {
+            "title": "Quản lý Video",
+            "subtitle": "Video giới thiệu trang chủ",
+            "url": "Link Video (Youtube/Vimeo)",
+            "current": "Video hiện tại"
+        },
+        "about": {
+            "title": "Giới thiệu",
+            "subtitle": "Nội dung phần Về Chúng Tôi",
+            "heading": "Tiêu đề",
+            "content": "Nội dung chi tiết",
+            "image": "Hình ảnh minh họa"
+        }
+    }
+}

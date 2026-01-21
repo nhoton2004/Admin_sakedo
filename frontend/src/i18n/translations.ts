@@ -1,0 +1,271 @@
+export const translations = {
+    vi: {
+        // Layout & Navigation
+        restaurantAdmin: 'Quản Lý Nhà Hàng',
+        adminPanel: 'Bảng Điều Khiển',
+        logout: 'Đăng xuất',
+
+        // Menu items
+        dashboard: 'Tổng Quan',
+        categories: 'Danh Mục',
+        products: 'Sản Phẩm',
+        reservations: 'Đặt Bàn',
+        orders: 'Đơn Hàng',
+        drivers: 'Tài Xế',
+
+        // Common
+        loading: 'Đang tải...',
+        search: 'Tìm kiếm',
+        filter: 'Lọc',
+        actions: 'Thao tác',
+        save: 'Lưu',
+        cancel: 'Hủy',
+        edit: 'Sửa',
+        delete: 'Xóa',
+        add: 'Thêm',
+        create: 'Tạo mới',
+        update: 'Cập nhật',
+        confirm: 'Xác nhận',
+        status: 'Trạng thái',
+        active: 'Hoạt động',
+        inactive: 'Không hoạt động',
+        name: 'Tên',
+        email: 'Email',
+        password: 'Mật khẩu',
+        phone: 'Số điện thoại',
+        address: 'Địa chỉ',
+        note: 'Ghi chú',
+        total: 'Tổng',
+        createdAt: 'Ngày tạo',
+
+        // Login
+        signIn: 'Đăng Nhập',
+        signInToManage: 'Đăng nhập để quản lý nhà hàng',
+        signingIn: 'Đang đăng nhập...',
+        defaultCredentials: 'Thông tin đăng nhập mặc định:',
+
+        // Dashboard
+        welcomeMessage: 'Chào mừng đến Bảng Điều Khiển Admin',
+        useNavigation: 'Sử dụng menu bên trái để quản lý hoạt động nhà hàng.',
+
+        // Categories
+        addCategory: '+ Thêm Danh Mục',
+        editCategory: 'Sửa Danh Mục',
+        deleteConfirm: 'Bạn có chắc muốn xóa mục này?',
+        toggleStatus: 'Đổi trạng thái',
+        activate: 'Kích hoạt',
+        deactivate: 'Vô hiệu hóa',
+
+        // Products
+        addProduct: '+ Thêm Sản Phẩm',
+        editProduct: 'Sửa Sản Phẩm',
+        searchProducts: 'Tìm kiếm sản phẩm...',
+        allCategories: 'Tất cả danh mục',
+        allStatus: 'Tất cả trạng thái',
+        category: 'Danh mục',
+        description: 'Mô tả',
+        price: 'Giá',
+        priceVnd: 'Giá (VND)',
+        imageUrl: 'URL Hình ảnh',
+        featured: 'Nổi bật',
+        featuredProduct: 'Sản phẩm nổi bật',
+        selectCategory: 'Chọn danh mục',
+        toggleFeatured: 'Đổi nổi bật',
+        yes: 'Có',
+        no: 'Không',
+
+        // Home Management
+        banners: 'Banner',
+        manageBanners: 'Quản lý Banner',
+        addBanner: '+ Thêm Banner',
+        editBanner: 'Sửa Banner',
+        title: 'Tiêu đề',
+        subtitle: 'Phụ đề',
+        ctaText: 'Text nút CTA',
+        ctaLink: 'Link nút CTA',
+        order: 'Thứ tự',
+        reorder: 'Sắp xếp lại',
+        video: 'Video',
+        videoUrl: 'URL Video',
+        updateVideo: 'Cập nhật Video',
+        currentVideo: 'Video hiện tại',
+        about: 'Về chúng tôi',
+        aboutUs: 'Về chúng tôi',
+        heading: 'Tiêu đề',
+        content: 'Nội dung',
+        settings: 'Cài đặt',
+
+        // Reservations
+        filterByDate: 'Lọc theo ngày',
+        filterByStatus: 'Lọc theo trạng thái',
+        customer: 'Khách hàng',
+        dateTime: 'Ngày & Giờ',
+        guests: 'Số khách',
+        people: 'người',
+        confirmReservation: 'Xác nhận',
+        cancelReservation: 'Hủy',
+        completeReservation: 'Hoàn thành',
+        new: 'Mới',
+        confirmed: 'Đã xác nhận',
+        completed: 'Hoàn thành',
+        canceled: 'Đã hủy',
+
+        // Orders
+        assignDriver: 'Gán Tài Xế',
+        selectDriver: 'Chọn tài xế',
+        chooseDriver: 'Chọn tài xế...',
+        assign: 'Gán',
+        driver: 'Tài xế',
+        pending: 'Chờ xử lý',
+        preparing: 'Đang chuẩn bị',
+        ready: 'Sẵn sàng',
+        delivering: 'Đang giao',
+        orderDetails: 'Chi tiết đơn hàng',
+
+        // Drivers
+        addDriver: '+ Thêm Tài Xế',
+        addNewDriver: 'Thêm Tài Xế Mới',
+        minimumPassword: 'Mật khẩu tối thiểu 6 ký tự',
+
+        // Errors & Messages
+        operationFailed: 'Thao tác thất bại',
+        loginFailed: 'Đăng nhập thất bại',
+        validationFailed: 'Xác thực thất bại',
+    },
+    en: {
+        // Layout & Navigation
+        restaurantAdmin: 'Restaurant Admin',
+        adminPanel: 'Admin Panel',
+        logout: 'Logout',
+
+        // Menu items
+        dashboard: 'Dashboard',
+        categories: 'Categories',
+        products: 'Products',
+        reservations: 'Reservations',
+        orders: 'Orders',
+        drivers: 'Drivers',
+
+        // Common
+        loading: 'Loading...',
+        search: 'Search',
+        filter: 'Filter',
+        actions: 'Actions',
+        save: 'Save',
+        cancel: 'Cancel',
+        edit: 'Edit',
+        delete: 'Delete',
+        add: 'Add',
+        create: 'Create',
+        update: 'Update',
+        confirm: 'Confirm',
+        status: 'Status',
+        active: 'Active',
+        inactive: 'Inactive',
+        name: 'Name',
+        email: 'Email',
+        password: 'Password',
+        phone: 'Phone',
+        address: 'Address',
+        note: 'Note',
+        total: 'Total',
+        createdAt: 'Created At',
+
+        // Login
+        signIn: 'Sign In',
+        signInToManage: 'Sign in to manage your restaurant',
+        signingIn: 'Signing in...',
+        defaultCredentials: 'Default credentials:',
+
+        // Dashboard
+        welcomeMessage: 'Welcome to Restaurant Admin Panel',
+        useNavigation: 'Use the navigation menu on the left to manage your restaurant operations.',
+
+        // Categories
+        addCategory: '+ Add Category',
+        editCategory: 'Edit Category',
+        deleteConfirm: 'Are you sure you want to delete this item?',
+        toggleStatus: 'Toggle status',
+        activate: 'Activate',
+        deactivate: 'Deactivate',
+
+        // Products
+        addProduct: '+ Add Product',
+        editProduct: 'Edit Product',
+        searchProducts: 'Search products...',
+        allCategories: 'All Categories',
+        allStatus: 'All Status',
+        category: 'Category',
+        description: 'Description',
+        price: 'Price',
+        priceVnd: 'Price (VND)',
+        imageUrl: 'Image URL',
+        featured: 'Featured',
+        featuredProduct: 'Featured Product',
+        selectCategory: 'Select category',
+        toggleFeatured: 'Toggle featured',
+        yes: 'Yes',
+        no: 'No',
+
+        // Home Management
+        banners: 'Banners',
+        manageBanners: 'Manage Banners',
+        addBanner: '+ Add Banner',
+        editBanner: 'Edit Banner',
+        title: 'Title',
+        subtitle: 'Subtitle',
+        ctaText: 'CTA Button Text',
+        ctaLink: 'CTA Button Link',
+        order: 'Order',
+        reorder: 'Reorder',
+        video: 'Video',
+        videoUrl: 'Video URL',
+        updateVideo: 'Update Video',
+        currentVideo: 'Current Video',
+        about: 'About Us',
+        aboutUs: 'About Us',
+        heading: 'Heading',
+        content: 'Content',
+        settings: 'Settings',
+
+        // Reservations
+        filterByDate: 'Filter by date',
+        filterByStatus: 'Filter by status',
+        customer: 'Customer',
+        dateTime: 'Date & Time',
+        guests: 'Guests',
+        people: 'people',
+        confirmReservation: 'Confirm',
+        cancelReservation: 'Cancel',
+        completeReservation: 'Complete',
+        new: 'New',
+        confirmed: 'Confirmed',
+        completed: 'Completed',
+        canceled: 'Canceled',
+
+        // Orders
+        assignDriver: 'Assign Driver',
+        selectDriver: 'Select Driver',
+        chooseDriver: 'Choose driver...',
+        assign: 'Assign',
+        driver: 'Driver',
+        pending: 'Pending',
+        preparing: 'Preparing',
+        ready: 'Ready',
+        delivering: 'Delivering',
+        orderDetails: 'Order Details',
+
+        // Drivers
+        addDriver: '+ Add Driver',
+        addNewDriver: 'Add New Driver',
+        minimumPassword: 'Password must be at least 6 characters',
+
+        // Errors & Messages
+        operationFailed: 'Operation failed',
+        loginFailed: 'Login failed',
+        validationFailed: 'Validation failed',
+    },
+};
+
+export type Language = 'vi' | 'en';
+export type TranslationKey = keyof typeof translations.vi;
