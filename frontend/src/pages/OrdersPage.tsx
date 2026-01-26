@@ -194,10 +194,10 @@ const OrdersPage: React.FC = () => {
                 ))}
             </div>
 
-            {orders.length === 0 && (
+            {orders.length === 0 && !loading && (
                 <Card padding="lg">
                     <div className="text-center py-12 text-neutral-500">
-                        {t('common.loading')}
+                        No orders found
                     </div>
                 </Card>
             )}

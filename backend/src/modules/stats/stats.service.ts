@@ -3,6 +3,7 @@ import { StatsRepository } from './stats.repository';
 
 /**
  * Service for dashboard stats business logic
+ * Aggregates data from repository for dashboard display
  */
 export class StatsService {
     private repository: StatsRepository;
@@ -13,14 +14,28 @@ export class StatsService {
 
     /**
      * Get dashboard statistics
-     * Returns real-time counts from database
+     * Returns real-time counts and metrics from database
      */
     public async getDashboardStats(): Promise<DashboardStatsDto> {
-        const [totalCategories, totalProducts, totalOrders, totalReservations] = await Promise.all([
+        // Fetch all data in parallel for performance
+        const [
+            totalCategories,
+            totalProducts,
+            totalOrders,
+            totalReservations,
+            ordersToday,
+            reservationsToday,
+            revenueToday,
+            ordersByStatus,
+        ] = await Promise.all([
             this.repository.getTotalCategories(),
             this.repository.getTotalProducts(),
             this.repository.getTotalOrders(),
             this.repository.getTotalReservations(),
+            this.repository.getOrdersToday(),
+            this.repository.getReservationsToday(),
+            this.repository.getRevenueToday(),
+            this.repository.getOrdersByStatus(),
         ]);
 
         return {
@@ -28,6 +43,10 @@ export class StatsService {
             totalProducts,
             totalOrders,
             totalReservations,
+            ordersToday,
+            reservationsToday,
+            revenueToday,
+            ordersByStatus,
         };
     }
 }

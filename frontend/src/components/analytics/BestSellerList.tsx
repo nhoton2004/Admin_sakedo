@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, Heart } from 'lucide-react';
 import { Card } from '../ui/Card';
 
@@ -16,9 +17,11 @@ interface BestSellerListProps {
 }
 
 export const BestSellerList: React.FC<BestSellerListProps> = ({ items }) => {
+    const { t } = useTranslation();
+
     return (
         <Card padding="lg">
-            <h3 className="text-lg font-bold text-neutral-900 mb-6">Best Seller (Menus)</h3>
+            <h3 className="text-lg font-bold text-neutral-900 mb-6">{t('analytics.bestSeller')}</h3>
 
             <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
                 {items.map((item) => (

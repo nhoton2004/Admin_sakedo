@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Bell, ChevronDown, Check } from 'lucide-react';
 import { Input } from '../ui/Input';
-import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 
 interface TopbarProps {
@@ -33,10 +32,6 @@ export const Topbar: React.FC<TopbarProps> = ({ notificationCount = 0 }) => {
 
                 {/* Actions */}
                 <div className="flex items-center gap-4">
-                    {/* Recipe Guide CTA */}
-                    <Button variant="primary" size="sm" className="whitespace-nowrap">
-                        Recipe Guide
-                    </Button>
 
                     {/* Notifications */}
                     <button className="relative p-2 hover:bg-neutral-50 rounded-lg transition-colors">

@@ -6,7 +6,10 @@
         "customers": "Khách hàng",
         "analytics": "Thống kê",
         "settings": "Cài đặt",
-        "content": "Nội dung"
+        "content": "Nội dung",
+        "profile": "Hồ sơ",
+        "management": "Quản lý",
+        "menu": "Menu"
     },
     "dashboard": {
         "title": "Tổng quan",
@@ -113,6 +116,12 @@
         "phone": "Điện thoại",
         "activeStatus": "Trạng thái hoạt động"
     },
+    "customers": {
+        "title": "Quản lý Khách hàng",
+        "subtitle": "Danh sách khách hàng",
+        "noCustomers": "Chưa có khách hàng",
+        "noCustomersDesc": "Chưa có khách hàng nào trong hệ thống"
+    },
     "content": {
         "banners": {
             "title": "Quản lý Banner",
@@ -137,5 +146,32 @@
             "content": "Nội dung chi tiết",
             "image": "Hình ảnh minh họa"
         }
+    },
+    "settings": {
+        "general": "Cài đặt chung",
+        "storeInfo": "Thông tin cửa hàng",
+        "storeName": "Tên cửa hàng",
+        "email": "Email liên hệ",
+        "phone": "Số điện thoại",
+        "address": "Địa chỉ",
+        "description": "Mô tả cửa hàng"
+    },
+    "profile": {
+        "personalInfo": "Thông tin cá nhân",
+        "security": "Bảo mật",
+        "currentPassword": "Mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu mới",
+        "updatePassword": "Cập nhật mật khẩu"
+    },
+    "analytics": {
+        "salesStatistic": "Thống kê Doanh thu",
+        "customerMap": "Bản đồ Khách hàng",
+        "bestSeller": "Bán chạy nhất",
+        "weekly": "Tuần",
+        "monthly": "Tháng",
+        "yearly": "Năm",
+        "beverage": "Đồ uống",
+        "food": "Thức ăn"
     }
 }

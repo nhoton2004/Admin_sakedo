@@ -9,6 +9,8 @@ import {
     BarChart3,
     ChevronDown,
     Plus,
+    Settings,
+    Calendar,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -65,10 +67,28 @@ export const Sidebar: React.FC = () => {
             path: '/admin/customers',
         },
         {
+            id: 'reservations',
+            label: t('dashboard.kpi.reservations'),
+            icon: <Calendar className="w-5 h-5" />,
+            path: '/admin/reservations',
+        },
+        {
             id: 'analytics',
             label: t('nav.analytics'),
             icon: <BarChart3 className="w-5 h-5" />,
             path: '/admin/analytics',
+        },
+        {
+            id: 'settings',
+            label: t('nav.settings'),
+            icon: <Settings className="w-5 h-5" />,
+            path: '/admin/settings',
+        },
+        {
+            id: 'profile',
+            label: t('nav.profile'),
+            icon: <Users className="w-5 h-5" />, // User icon reused or imported new
+            path: '/admin/profile',
         },
     ];
 

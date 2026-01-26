@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     BarChart,
     Bar,
@@ -22,19 +23,20 @@ interface SalesStatisticChartProps {
     data: SalesData[];
 }
 
-const timeframeOptions = [
-    { label: 'Weekly', value: 'weekly' },
-    { label: 'Monthly', value: 'monthly' },
-    { label: 'Yearly', value: 'yearly' },
-];
-
 export const SalesStatisticChart: React.FC<SalesStatisticChartProps> = ({ data }) => {
+    const { t } = useTranslation();
     const [timeframe, setTimeframe] = useState('weekly');
+
+    const timeframeOptions = [
+        { label: t('analytics.weekly'), value: 'weekly' },
+        { label: t('analytics.monthly'), value: 'monthly' },
+        { label: t('analytics.yearly'), value: 'yearly' },
+    ];
 
     return (
         <Card padding="lg">
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-neutral-900">Sales Statistic</h3>
+                <h3 className="text-lg font-bold text-neutral-900">{t('analytics.salesStatistic')}</h3>
                 <Dropdown
                     options={timeframeOptions}
                     value={timeframe}
@@ -74,13 +76,13 @@ export const SalesStatisticChart: React.FC<SalesStatisticChartProps> = ({ data }
                         dataKey="beverage"
                         fill="#7C5CFF"
                         radius={[8, 8, 0, 0]}
-                        name="Beverage"
+                        name={t('analytics.beverage')}
                     />
                     <Bar
                         dataKey="food"
                         fill="#FF6A3D"
                         radius={[8, 8, 0, 0]}
-                        name="Food"
+                        name={t('analytics.food')}
                     />
                 </BarChart>
             </ResponsiveContainer>

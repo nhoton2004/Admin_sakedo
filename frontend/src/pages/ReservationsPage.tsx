@@ -170,10 +170,10 @@ const ReservationsPage: React.FC = () => {
                 ))}
             </div>
 
-            {reservations.length === 0 && (
+            {reservations.length === 0 && !loading && (
                 <Card padding="lg">
                     <div className="text-center py-12 text-neutral-500">
-                        {t('common.loading')}
+                        No reservations found
                     </div>
                 </Card>
             )}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     BarChart,
     Bar,
@@ -20,9 +21,11 @@ interface CustomerMapChartProps {
 }
 
 export const CustomerMapChart: React.FC<CustomerMapChartProps> = ({ data }) => {
+    const { t } = useTranslation();
+
     return (
         <Card padding="lg">
-            <h3 className="text-lg font-bold text-neutral-900 mb-6">Customer Map</h3>
+            <h3 className="text-lg font-bold text-neutral-900 mb-6">{t('analytics.customerMap')}</h3>
 
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data}>

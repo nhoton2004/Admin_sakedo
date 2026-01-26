@@ -15,6 +15,7 @@ import reservationsRoutes from './modules/reservations/reservations.routes';
 import ordersRoutes from './modules/orders/orders.routes';
 import usersRoutes from './modules/users/users.routes';
 import statsRoutes from './modules/stats/stats.routes';
+import analyticsRoutes from './modules/analytics';
 
 /**
  * Main Express application
@@ -115,6 +116,9 @@ class App {
             AuthMiddleware.requireAdmin,
             aboutRoutes
         );
+
+        // Analytics routes (admin and staff)
+        this.app.use('/admin/analytics', analyticsRoutes);
     }
 
     /**

@@ -6,7 +6,10 @@
         "customers": "Customers",
         "analytics": "Analytics",
         "settings": "Settings",
-        "content": "Content"
+        "content": "Content",
+        "profile": "Profile",
+        "management": "Management",
+        "menu": "Menu"
     },
     "dashboard": {
         "title": "Overview",
@@ -113,6 +116,12 @@
         "phone": "Phone",
         "activeStatus": "Active Status"
     },
+    "customers": {
+        "title": "Customer Management",
+        "subtitle": "Customer list",
+        "noCustomers": "No Customers",
+        "noCustomersDesc": "No customers in the system yet"
+    },
     "content": {
         "banners": {
             "title": "Banner Management",
@@ -137,5 +146,32 @@
             "content": "Content",
             "image": "Image"
         }
+    },
+    "settings": {
+        "general": "General Settings",
+        "storeInfo": "Store Information",
+        "storeName": "Store Name",
+        "email": "Contact Email",
+        "phone": "Phone Number",
+        "address": "Address",
+        "description": "Description"
+    },
+    "profile": {
+        "personalInfo": "Personal Information",
+        "security": "Security",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "updatePassword": "Update Password"
+    },
+    "analytics": {
+        "salesStatistic": "Sales Statistic",
+        "customerMap": "Customer Map",
+        "bestSeller": "Best Seller (Menus)",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "beverage": "Beverage",
+        "food": "Food"
     }
 }
