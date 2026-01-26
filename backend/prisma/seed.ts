@@ -24,6 +24,7 @@ async function main() {
     console.log('✅ Created admin user:', admin.email);
 
     // Create sample categories
+    /*
     const beverages = await prisma.category.create({
         data: {
             name: 'Beverages',
@@ -114,6 +115,7 @@ async function main() {
     });
 
     console.log('✅ Created driver:', driver.email);
+    */
 
     console.log('🎉 Seed completed successfully!');
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '../app/admin/AdminLayout';
-import { analyticsData } from '../mock/analyticsData';
 import { KpiCard } from '../components/analytics/KpiCard';
 import { SalesStatisticChart } from '../components/analytics/SalesStatisticChart';
 import { CustomerMapChart } from '../components/analytics/CustomerMapChart';
@@ -11,6 +10,46 @@ import { ChevronRight } from 'lucide-react';
 
 const AnalyticsPage: React.FC = () => {
     const { t } = useTranslation();
+
+    // Empty data for clean state
+    const kpis = [
+        {
+            id: 1,
+            title: t('dashboard.kpi.totalCategories'),
+            value: 0,
+            percentage: 0,
+            change: '0%',
+            color: '#FF6A3D',
+        },
+        {
+            id: 2,
+            title: t('dashboard.kpi.totalProducts'),
+            value: 0,
+            percentage: 0,
+            change: '0%',
+            color: '#10B981',
+        },
+        {
+            id: 3,
+            title: t('dashboard.kpi.totalOrders'),
+            value: 0,
+            percentage: 0,
+            change: '0%',
+            color: '#7C5CFF',
+        },
+        {
+            id: 4,
+            title: t('dashboard.kpi.reservations'),
+            value: 0,
+            percentage: 0,
+            change: '0%',
+            color: '#F59E0B',
+        },
+    ];
+
+    const weeklySales: any[] = [];
+    const customerMap: any[] = [];
+    const bestSellers: any[] = [];
 
     return (
         <AdminLayout>
@@ -26,10 +65,10 @@ const AnalyticsPage: React.FC = () => {
 
             {/* KPI Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                {analyticsData.kpis.map((kpi) => (
+                {kpis.map((kpi) => (
                     <KpiCard
                         key={kpi.id}
-                        title={kpi.title} // Note: These titles from mock data might need translation mapping if they are static strings
+                        title={kpi.title}
                         value={kpi.value}
                         percentage={kpi.percentage}
                         change={kpi.change}
@@ -42,17 +81,17 @@ const AnalyticsPage: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Sales Statistic - Takes 5 columns */}
                 <div className="lg:col-span-5">
-                    <SalesStatisticChart data={analyticsData.weeklySales} />
+                    <SalesStatisticChart data={weeklySales} />
                 </div>
 
                 {/* Customer Map - Takes 4 columns */}
                 <div className="lg:col-span-4">
-                    <CustomerMapChart data={analyticsData.customerMap} />
+                    <CustomerMapChart data={customerMap} />
                 </div>
 
                 {/* Best Seller - Takes 3 columns */}
                 <div className="lg:col-span-3">
-                    <BestSellerList items={analyticsData.bestSellers} />
+                    <BestSellerList items={bestSellers} />
                 </div>
             </div>
 
