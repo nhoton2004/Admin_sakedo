@@ -1,47 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminLayout } from '../app/admin/AdminLayout';
-import { User, UserService, CreateUserDto } from '../services';
+import { DriverService, DriverStats } from '../services/driverService';
+import { User } from '../services/authService';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { ChevronRight, Plus, Truck, Mail, ToggleLeft, ToggleRight, Calendar } from 'lucide-react';
+import {
+    Users,
+    Truck,
+    Star,
+    DollarSign,
+    MapPin,
+    Phone,
+    MoreVertical,
+    Plus
+} from 'lucide-react';
 
-const DriversPage: React.FC = () => {
+export const DriversPage: React.FC = () => {
     const { t } = useTranslation();
     const [drivers, setDrivers] = useState<User[]>([]);
+    const [stats, setStats] = useState<DriverStats>({ totalDrivers: 0, activeDrivers: 0, totalEarnings: 0 });
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+
+    // New Driver Form State
+    const [newDriver, setNewDriver] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        vehiclePlate: '',
+        area: '',
+        password: '123456'
+    });
 
     useEffect(() => {
-        loadDrivers();
+        loadData();
     }, []);
 
-    const loadDrivers = async () => {
+    const loadData = async () => {
         try {
-            const data = await UserService.getAll({ role: 'DRIVER' });
-            setDrivers(data);
+            const [driversData, statsData] = await Promise.all([
+                DriverService.getAll(),
+                DriverService.getStats()
+            ]);
+            setDrivers(driversData);
+            setStats(statsData);
+        } catch (error) {
+            console.error('Failed to load drivers data', error);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleCreateDriver = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await UserService.create({ ...formData, role: 'DRIVER' } as CreateUserDto);
+            await DriverService.create(newDriver);
             setShowModal(false);
-            setFormData({ name: '', email: '', password: '' });
-            loadDrivers();
-        } catch (error: any) {
-            alert(error.response?.data?.message || t('common.error'));
+            setNewDriver({ name: '', email: '', phone: '', vehiclePlate: '', area: '', password: '123456' });
+            loadData();
+        } catch (error) {
+            alert('Failed to create driver');
         }
     };
 
-    const handleToggleActive = async (id: string) => {
-        await UserService.toggleActive(id);
-        loadDrivers();
+    const getStatusColor = (status?: string) => {
+        switch (status) {
+            case 'AVAILABLE': return 'success';
+            case 'BUSY': return 'warning';
+            case 'OFFLINE': return 'neutral';
+            default: return 'neutral';
+        }
     };
 
     if (loading) {
@@ -56,137 +86,184 @@ const DriversPage: React.FC = () => {
 
     return (
         <AdminLayout>
-            {/* Breadcrumb */}
-            <div className="flex items-center justify-end gap-2 text-sm text-neutral-500 mb-4">
-                <span>{t('nav.settings')}</span>
-                <ChevronRight className="w-4 h-4" />
-                <span className="text-neutral-900 font-medium">{t('drivers.title')}</span>
-            </div>
-
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <h1 className="text-2xl font-bold text-neutral-900">{t('drivers.title')}</h1>
-                <Button variant="primary" onClick={() => setShowModal(true)}>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-neutral-900">{t('nav.drivers') || 'Quản lý Tài xế'}</h1>
+                    <p className="text-neutral-500">Quản lý đội ngũ giao hàng và theo dõi hiệu suất</p>
+                </div>
+                <Button onClick={() => setShowModal(true)}>
                     <Plus className="w-4 h-4" />
-                    {t('drivers.addDriver')}
+                    Thêm tài xế
                 </Button>
             </div>
 
-            {/* Drivers Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <Card className="p-4 flex items-center gap-4">
+                    <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                        <Users className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <p className="text-sm text-neutral-500">Tổng tài xế</p>
+                        <h3 className="text-2xl font-bold text-neutral-900">{stats.totalDrivers}</h3>
+                    </div>
+                </Card>
+                <Card className="p-4 flex items-center gap-4">
+                    <div className="p-3 bg-green-50 text-green-600 rounded-xl">
+                        <Truck className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <p className="text-sm text-neutral-500">Đang hoạt động</p>
+                        <h3 className="text-2xl font-bold text-neutral-900">{stats.activeDrivers}</h3>
+                    </div>
+                </Card>
+                <Card className="p-4 flex items-center gap-4">
+                    <div className="p-3 bg-purple-50 text-purple-600 rounded-xl">
+                        <DollarSign className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <p className="text-sm text-neutral-500">Tổng doanh thu</p>
+                        <h3 className="text-2xl font-bold text-neutral-900">
+                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact' }).format(stats.totalEarnings)}
+                        </h3>
+                    </div>
+                </Card>
+            </div>
+
+            {/* Drivers List */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {drivers.map((driver) => (
-                    <Card key={driver.id} padding="md" hover>
-                        <div className="flex flex-col items-center text-center">
-                            {/* Avatar */}
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white mb-4 shadow-lg">
-                                <Truck className="w-10 h-10" />
+                    <Card key={driver.id} hover className="group">
+                        <div className="p-5">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="relative">
+                                        <img
+                                            src={driver.avatar || `https://ui-avatars.com/api/?name=${driver.name}&background=random`}
+                                            alt={driver.name}
+                                            className="w-12 h-12 rounded-full object-cover border border-neutral-100"
+                                        />
+                                        <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white
+                                            ${driver.driverStatus === 'AVAILABLE' ? 'bg-green-500' :
+                                                driver.driverStatus === 'BUSY' ? 'bg-yellow-500' : 'bg-neutral-400'}`}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-neutral-900">{driver.name}</h3>
+                                        <div className="flex items-center gap-1 text-yellow-500 text-sm">
+                                            <Star className="w-3.5 h-3.5 fill-current" />
+                                            <span className="font-medium">{driver.rating || 5.0}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button className="p-1 text-neutral-400 hover:text-primary rounded-lg hover:bg-neutral-50 transition-colors">
+                                    <MoreVertical className="w-5 h-5" />
+                                </button>
                             </div>
 
-                            {/* Info */}
-                            <h3 className="font-bold text-neutral-900 mb-1">{driver.name}</h3>
-                            <div className="flex items-center gap-2 text-sm text-neutral-500 mb-3">
-                                <Mail className="w-4 h-4" />
-                                <span className="truncate">{driver.email}</span>
+                            <div className="space-y-2 mb-4">
+                                <div className="flex items-center gap-2 text-sm text-neutral-600">
+                                    <Phone className="w-4 h-4 text-neutral-400" />
+                                    <span>{driver.phone || 'Chưa cập nhật'}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-neutral-600">
+                                    <Truck className="w-4 h-4 text-neutral-400" />
+                                    <span>{driver.vehiclePlate || 'Chưa cập nhật'}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-neutral-600">
+                                    <MapPin className="w-4 h-4 text-neutral-400" />
+                                    <span>{driver.area || 'Chưa cập nhật'}</span>
+                                </div>
                             </div>
 
-                            {/* Status */}
-                            <Badge variant={driver.isActive ? 'success' : 'neutral'} className="mb-4">
-                                {driver.isActive ? t('common.active') : t('common.inactive')}
-                            </Badge>
-
-                            {/* Created Date */}
-                            <div className="flex items-center gap-2 text-xs text-neutral-400 mb-4">
-                                <Calendar className="w-3 h-3" />
-                                <span>{t('auth.createdAt')} {new Date(driver.createdAt).toLocaleDateString()}</span>
+                            <div className="pt-4 border-t border-neutral-100 flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-neutral-500 text-center">Đơn hàng</p>
+                                    <p className="font-bold text-neutral-900 text-center">{driver.totalOrders || 0}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-neutral-500 text-center">Thu nhập</p>
+                                    <p className="font-bold text-primary text-center">
+                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact' }).format(driver.totalEarnings || 0)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <Badge variant={getStatusColor(driver.driverStatus)}>
+                                        {driver.driverStatus || 'OFFLINE'}
+                                    </Badge>
+                                </div>
                             </div>
-
-                            {/* Action */}
-                            <Button
-                                size="sm"
-                                variant={driver.isActive ? 'secondary' : 'primary'}
-                                onClick={() => handleToggleActive(driver.id)}
-                                className="w-full"
-                            >
-                                {driver.isActive ? (
-                                    <>
-                                        <ToggleRight className="w-4 h-4" />
-                                        {t('common.inactive')}
-                                    </>
-                                ) : (
-                                    <>
-                                        <ToggleLeft className="w-4 h-4" />
-                                        {t('common.active')}
-                                    </>
-                                )}
-                            </Button>
                         </div>
                     </Card>
                 ))}
             </div>
 
-            {drivers.length === 0 && (
-                <Card padding="lg">
-                    <div className="text-center py-12 text-neutral-500">
-                        {t('common.loading')}
-                    </div>
-                </Card>
-            )}
-
-            {/* Add Driver Modal */}
+            {/* Create Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <Card padding="lg" className="w-full max-w-md">
-                        <h2 className="text-xl font-bold text-neutral-900 mb-6">{t('drivers.addDriver')}</h2>
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden">
+                        <div className="p-6 border-b border-neutral-100">
+                            <h2 className="text-xl font-bold">Thêm tài xế mới</h2>
+                        </div>
+                        <form onSubmit={handleCreateDriver} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-2">{t('drivers.name')}</label>
+                                <label className="block text-sm font-medium text-neutral-700 mb-1">Họ tên</label>
                                 <input
-                                    type="text"
                                     required
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-200"
-                                    placeholder={t('drivers.name')}
+                                    className="w-full px-4 py-2 rounded-lg border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                    value={newDriver.name}
+                                    onChange={e => setNewDriver({ ...newDriver, name: e.target.value })}
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-2">{t('auth.email')}</label>
-                                <input
-                                    type="email"
-                                    required
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-200"
-                                    placeholder="driver@example.com"
-                                />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-1">Email</label>
+                                    <input
+                                        required type="email"
+                                        className="w-full px-4 py-2 rounded-lg border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        value={newDriver.email}
+                                        onChange={e => setNewDriver({ ...newDriver, email: e.target.value })}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-1">Số điện thoại</label>
+                                    <input
+                                        required
+                                        className="w-full px-4 py-2 rounded-lg border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        value={newDriver.phone}
+                                        onChange={e => setNewDriver({ ...newDriver, phone: e.target.value })}
+                                    />
+                                </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-2">{t('auth.password')}</label>
-                                <input
-                                    type="password"
-                                    required
-                                    minLength={6}
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-200"
-                                    placeholder="Minimum 6 characters"
-                                />
-                                <p className="text-xs text-neutral-500 mt-1">Minimum 6 characters</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-1">Biển số xe</label>
+                                    <input
+                                        required
+                                        className="w-full px-4 py-2 rounded-lg border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        value={newDriver.vehiclePlate}
+                                        onChange={e => setNewDriver({ ...newDriver, vehiclePlate: e.target.value })}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-1">Khu vực</label>
+                                    <input
+                                        required
+                                        className="w-full px-4 py-2 rounded-lg border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        value={newDriver.area}
+                                        onChange={e => setNewDriver({ ...newDriver, area: e.target.value })}
+                                    />
+                                </div>
                             </div>
-                            <div className="flex gap-3 pt-4">
-                                <Button type="submit" variant="primary" className="flex-1">
-                                    {t('common.save')}
-                                </Button>
-                                <Button type="button" variant="secondary" onClick={() => setShowModal(false)} className="flex-1">
-                                    {t('common.cancel')}
-                                </Button>
+                            <div className="pt-4 flex justify-end gap-3">
+                                <Button variant="secondary" type="button" onClick={() => setShowModal(false)}>Hủy</Button>
+                                <Button variant="primary" type="submit">Thêm tài xế</Button>
                             </div>
                         </form>
-                    </Card>
+                    </div>
                 </div>
             )}
         </AdminLayout>
     );
 };
-
-export default DriversPage;

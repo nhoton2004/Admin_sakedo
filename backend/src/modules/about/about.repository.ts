@@ -1,25 +1,23 @@
-import { DatabaseService } from '../../config/database';
+import { AboutSection, IAboutSection } from '../../models';
 import type { UpdateAboutInput } from './about.dto';
 
 export class AboutRepository {
-    private db = DatabaseService.getInstance();
-
-    async get() {
-        return this.db.aboutSection.findFirst();
+    async get(): Promise<IAboutSection | null> {
+        return AboutSection.findOne().exec();
     }
 
-    async update(data: UpdateAboutInput) {
+    async update(data: UpdateAboutInput): Promise<IAboutSection> {
         const existing = await this.get();
 
         if (existing) {
-            return this.db.aboutSection.update({
-                where: { id: existing.id },
+            return AboutSection.findByIdAndUpdate(
+                existing._id,
                 data,
-            });
+                { new: true }
+            ).exec() as Promise<IAboutSection>;
         }
 
-        return this.db.aboutSection.create({
-            data,
-        });
+        const section = new AboutSection(data);
+        return section.save();
     }
 }

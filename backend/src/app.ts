@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import { config } from './config';
+import { connectDatabase } from './config/database';
 import { AuthMiddleware } from './common/middleware/auth.middleware';
 import { ErrorHandler } from './common/middleware/error.middleware';
 
@@ -15,6 +16,7 @@ import reservationsRoutes from './modules/reservations/reservations.routes';
 import ordersRoutes from './modules/orders/orders.routes';
 import usersRoutes from './modules/users/users.routes';
 import statsRoutes from './modules/stats/stats.routes';
+import { driverRoutes } from './modules/drivers/drivers.routes';
 import analyticsRoutes from './modules/analytics';
 
 /**
@@ -84,7 +86,15 @@ class App {
             '/admin/users',
             AuthMiddleware.verifyToken,
             AuthMiddleware.requireAdmin,
+            AuthMiddleware.requireAdmin,
             usersRoutes
+        );
+
+        this.app.use(
+            '/admin/drivers',
+            AuthMiddleware.verifyToken,
+            AuthMiddleware.requireAdmin,
+            driverRoutes
         );
 
         // Stats endpoint
@@ -132,7 +142,10 @@ class App {
     /**
      * Start the server
      */
-    public listen(): void {
+    public async listen(): Promise<void> {
+        // Connect to MongoDB first
+        await connectDatabase();
+
         this.app.listen(config.port, () => {
             console.log(`🚀 Server is running on port ${config.port}`);
             console.log(`📍 Health check: http://localhost:${config.port}/health`);

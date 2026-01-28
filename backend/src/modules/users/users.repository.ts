@@ -1,5 +1,4 @@
-import { User, Role } from '@prisma/client';
-import { prisma } from '../../config/database';
+import { User, IUser } from '../../models';
 import { CreateUserDto, UserFilters } from './users.dto';
 
 /**
@@ -9,35 +8,28 @@ export class UsersRepository {
     /**
      * Find all users with filters
      */
-    public async findAll(filters: UserFilters): Promise<User[]> {
-        const where: any = {};
+    public async findAll(filters: UserFilters): Promise<IUser[]> {
+        const query: any = {};
 
         if (filters.role) {
-            where.role = filters.role as Role;
+            query.role = filters.role;
         }
 
-        return prisma.user.findMany({
-            where,
-            orderBy: { createdAt: 'desc' },
-        });
+        return User.find(query).sort({ createdAt: -1 }).exec();
     }
 
     /**
      * Find user by ID
      */
-    public async findById(id: string): Promise<User | null> {
-        return prisma.user.findUnique({
-            where: { id },
-        });
+    public async findById(id: string): Promise<IUser | null> {
+        return User.findById(id).exec();
     }
 
     /**
      * Find user by email
      */
-    public async findByEmail(email: string): Promise<User | null> {
-        return prisma.user.findUnique({
-            where: { email },
-        });
+    public async findByEmail(email: string): Promise<IUser | null> {
+        return User.findOne({ email }).exec();
     }
 
     /**
@@ -47,20 +39,20 @@ export class UsersRepository {
         name: string;
         email: string;
         passwordHash: string;
-        role: Role;
-    }): Promise<User> {
-        return prisma.user.create({
-            data,
-        });
+        role: 'ADMIN' | 'DRIVER' | 'USER';
+    }): Promise<IUser> {
+        const user = new User(data);
+        return user.save();
     }
 
     /**
      * Toggle active status
      */
-    public async toggleActive(id: string, isActive: boolean): Promise<User> {
-        return prisma.user.update({
-            where: { id },
-            data: { isActive },
-        });
+    public async toggleActive(id: string, isActive: boolean): Promise<IUser | null> {
+        return User.findByIdAndUpdate(
+            id,
+            { isActive },
+            { new: true }
+        ).exec();
     }
 }

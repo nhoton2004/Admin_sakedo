@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { IUser } from '../../models';
 import { AppError } from '../../common/middleware/error.middleware';
 import { PasswordUtils } from '../../common/utils/password.utils';
 import { CreateUserDto, UserFilters } from './users.dto';
@@ -22,7 +22,11 @@ export class UsersService {
         const users = await this.repository.findAll(filters);
 
         // Remove password hashes from response
-        return users.map(({ passwordHash, ...user }) => user);
+        return users.map((user) => {
+            const userObj = user.toObject();
+            const { passwordHash, ...rest } = userObj;
+            return rest;
+        });
     }
 
     /**
@@ -46,7 +50,8 @@ export class UsersService {
             role: Role.DRIVER,
         });
 
-        const { passwordHash: _, ...userWithoutPassword } = user;
+        const userObj = user.toObject();
+        const { passwordHash: _, ...userWithoutPassword } = userObj;
         return userWithoutPassword;
     }
 
@@ -62,7 +67,8 @@ export class UsersService {
 
         const updatedUser = await this.repository.toggleActive(id, !user.isActive);
 
-        const { passwordHash, ...userWithoutPassword } = updatedUser;
+        const updatedUserObj = updatedUser!.toObject();
+        const { passwordHash, ...userWithoutPassword } = updatedUserObj;
         return userWithoutPassword;
     }
 }

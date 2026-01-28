@@ -12,7 +12,7 @@ export class BannersService {
     async getBannerById(id: string) {
         const banner = await this.repository.findById(id);
         if (!banner) {
-            throw new AppError('Banner not found', 404);
+            throw new AppError(404, 'Banner not found');
         }
         return banner;
     }
@@ -29,7 +29,7 @@ export class BannersService {
     async toggleBannerActive(id: string) {
         const result = await this.repository.toggleActive(id);
         if (!result) {
-            throw new AppError('Banner not found', 404);
+            throw new AppError(404, 'Banner not found');
         }
         return result;
     }

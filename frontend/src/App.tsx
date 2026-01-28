@@ -9,7 +9,7 @@ import CategoriesPage from './pages/CategoriesPage';
 import ProductsPage from './pages/ProductsPage';
 import ReservationsPage from './pages/ReservationsPage';
 import OrdersPage from './pages/OrdersPage';
-import DriversPage from './pages/DriversPage';
+import { DriversPage } from './pages/DriversPage';
 import BannersPage from './pages/BannersPage';
 import VideoPage from './pages/VideoPage';
 import AboutPage from './pages/AboutPage';

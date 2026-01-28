@@ -42,16 +42,17 @@ export class AuthService {
         // Generate JWT token
         const accessToken = jwt.sign(
             {
-                id: user.id,
+                id: user._id.toString(),
                 email: user.email,
                 role: user.role,
             },
             config.jwtSecret,
-            { expiresIn: config.jwtExpiresIn }
+            { expiresIn: config.jwtExpiresIn as any }
         );
 
         // Return user without password hash
-        const { passwordHash, ...userWithoutPassword } = user;
+        const userObj = user.toObject();
+        const { passwordHash, ...userWithoutPassword } = userObj;
 
         return {
             accessToken,
@@ -69,7 +70,8 @@ export class AuthService {
             throw new AppError(404, 'User not found');
         }
 
-        const { passwordHash, ...userWithoutPassword } = user;
+        const userObj = user.toObject();
+        const { passwordHash, ...userWithoutPassword } = userObj;
         return userWithoutPassword;
     }
 }

@@ -1,29 +1,25 @@
-import { DatabaseService } from '../../config/database';
+import { HomeVideo, IHomeVideo } from '../../models';
 import type { UpdateVideoInput } from './home.dto';
 
 export class HomeRepository {
-    private db = DatabaseService.getInstance();
-
-    async getVideo() {
+    async getVideo(): Promise<IHomeVideo | null> {
         // Get the first (and should be only) video record
-        return this.db.homeVideo.findFirst({
-            where: { isActive: true },
-        });
+        return HomeVideo.findOne({ isActive: true }).exec();
     }
 
-    async updateVideo(data: UpdateVideoInput) {
+    async updateVideo(data: UpdateVideoInput): Promise<IHomeVideo> {
         // Try to update existing, or create if not exists
         const existing = await this.getVideo();
 
         if (existing) {
-            return this.db.homeVideo.update({
-                where: { id: existing.id },
+            return HomeVideo.findByIdAndUpdate(
+                existing._id,
                 data,
-            });
+                { new: true }
+            ).exec() as Promise<IHomeVideo>;
         }
 
-        return this.db.homeVideo.create({
-            data,
-        });
+        const video = new HomeVideo(data);
+        return video.save();
     }
 }

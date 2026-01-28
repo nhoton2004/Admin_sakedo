@@ -1,26 +1,28 @@
-import { PrismaClient } from '@prisma/client';
+import mongoose from 'mongoose';
 
-// Singleton Prisma Client instance
-class DatabaseService {
-    private static instance: PrismaClient;
+const connectDatabase = async (): Promise<void> => {
+    const uri = process.env.MONGODB_URI;
 
-    private constructor() { }
-
-    public static getInstance(): PrismaClient {
-        if (!DatabaseService.instance) {
-            DatabaseService.instance = new PrismaClient({
-                log: ['query', 'error', 'warn'],
-            });
-        }
-        return DatabaseService.instance;
+    if (!uri) {
+        console.error('❌ MONGODB_URI is not defined in environment variables');
+        process.exit(1);
     }
 
-    public static async disconnect(): Promise<void> {
-        if (DatabaseService.instance) {
-            await DatabaseService.instance.$disconnect();
-        }
+    try {
+        await mongoose.connect(uri);
+        console.log('✅ MongoDB connected successfully');
+    } catch (error) {
+        console.error('❌ MongoDB connection error:', error);
+        process.exit(1);
     }
-}
 
-export const prisma = DatabaseService.getInstance();
-export { DatabaseService };
+    mongoose.connection.on('error', (err) => {
+        console.error('MongoDB error:', err);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+        console.log('MongoDB disconnected');
+    });
+};
+
+export { connectDatabase };

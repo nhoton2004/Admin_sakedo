@@ -1,5 +1,4 @@
-import { Reservation, ReservationStatus } from '@prisma/client';
-import { prisma } from '../../config/database';
+import { Reservation, IReservation } from '../../models';
 import { ReservationFilters } from './reservations.dto';
 
 /**
@@ -9,46 +8,44 @@ export class ReservationsRepository {
     /**
      * Find all reservations with filters
      */
-    public async findAll(filters: ReservationFilters): Promise<Reservation[]> {
-        const where: any = {};
+    public async findAll(filters: ReservationFilters): Promise<IReservation[]> {
+        const query: any = {};
 
         if (filters.date) {
             const startDate = new Date(filters.date);
             const endDate = new Date(filters.date);
             endDate.setDate(endDate.getDate() + 1);
 
-            where.datetime = {
-                gte: startDate,
-                lt: endDate,
+            query.datetime = {
+                $gte: startDate,
+                $lt: endDate,
             };
         }
 
         if (filters.status) {
-            where.status = filters.status as ReservationStatus;
+            query.status = filters.status;
         }
 
-        return prisma.reservation.findMany({
-            where,
-            orderBy: { datetime: 'desc' },
-        });
+        return Reservation.find(query)
+            .sort({ datetime: -1 })
+            .exec();
     }
 
     /**
      * Find reservation by ID
      */
-    public async findById(id: string): Promise<Reservation | null> {
-        return prisma.reservation.findUnique({
-            where: { id },
-        });
+    public async findById(id: string): Promise<IReservation | null> {
+        return Reservation.findById(id).exec();
     }
 
     /**
      * Update reservation status
      */
-    public async updateStatus(id: string, status: ReservationStatus): Promise<Reservation> {
-        return prisma.reservation.update({
-            where: { id },
-            data: { status },
-        });
+    public async updateStatus(id: string, status: string): Promise<IReservation | null> {
+        return Reservation.findByIdAndUpdate(
+            id,
+            { status },
+            { new: true }
+        ).exec();
     }
 }

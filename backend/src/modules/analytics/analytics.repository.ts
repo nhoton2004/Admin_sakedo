@@ -1,9 +1,9 @@
-import { prisma } from '../../config/database';
+import { Order } from '../../models';
 import { DailyRevenueDto, TopProductDto, OrderStatusDistributionDto } from './analytics.dto';
 
 /**
  * Repository for analytics data access
- * Uses raw SQL queries for complex aggregations
+ * Uses MongoDB aggregation pipeline for complex aggregations
  */
 export class AnalyticsRepository {
     /**
@@ -15,18 +15,12 @@ export class AnalyticsRepository {
         startDate.setHours(0, 0, 0, 0);
 
         // Get orders grouped by date
-        const orders = await prisma.order.findMany({
-            where: {
-                createdAt: { gte: startDate },
-                status: 'COMPLETED',
-            },
-            select: {
-                createdAt: true,
-                total: true,
-            },
-        });
+        const orders = await Order.find({
+            createdAt: { $gte: startDate },
+            status: 'COMPLETED',
+        }).select('createdAt total').exec();
 
-        // Group by date manually (SQLite doesn't support DATE() function well with Prisma)
+        // Group by date manually
         const dailyMap = new Map<string, { revenue: number; count: number }>();
 
         // Initialize all days with 0
@@ -61,44 +55,39 @@ export class AnalyticsRepository {
      * Get top selling products
      */
     public async getTopProducts(limit: number = 10): Promise<TopProductDto[]> {
-        // Get order items with product info
-        const orderItems = await prisma.orderItem.groupBy({
-            by: ['productId'],
-            _sum: {
-                qty: true,
-                price: true,
-            },
-            orderBy: {
-                _sum: {
-                    qty: 'desc',
+        // Use aggregation to group order items by product
+        const topProducts = await Order.aggregate([
+            { $unwind: '$items' },
+            {
+                $group: {
+                    _id: '$items.productId',
+                    totalQuantity: { $sum: '$items.qty' },
+                    totalRevenue: { $sum: { $multiply: ['$items.qty', '$items.price'] } },
                 },
             },
-            take: limit,
-        });
-
-        // Get product details
-        const productIds = orderItems.map(item => item.productId);
-        const products = await prisma.product.findMany({
-            where: { id: { in: productIds } },
-            select: {
-                id: true,
-                name: true,
-                imageUrl: true,
+            { $sort: { totalQuantity: -1 } },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'product',
+                },
             },
-        });
+            { $unwind: { path: '$product', preserveNullAndEmptyArrays: true } },
+            {
+                $project: {
+                    id: '$_id',
+                    name: { $ifNull: ['$product.name', 'Unknown'] },
+                    imageUrl: '$product.imageUrl',
+                    totalQuantity: 1,
+                    totalRevenue: 1,
+                },
+            },
+        ]).exec();
 
-        const productMap = new Map(products.map(p => [p.id, p]));
-
-        return orderItems.map(item => {
-            const product = productMap.get(item.productId);
-            return {
-                id: item.productId,
-                name: product?.name || 'Unknown',
-                imageUrl: product?.imageUrl || null,
-                totalQuantity: item._sum.qty || 0,
-                totalRevenue: item._sum.price || 0,
-            };
-        });
+        return topProducts;
     }
 
     /**
@@ -109,7 +98,7 @@ export class AnalyticsRepository {
 
         const counts = await Promise.all(
             statuses.map(status =>
-                prisma.order.count({ where: { status } })
+                Order.countDocuments({ status }).exec()
             )
         );
 

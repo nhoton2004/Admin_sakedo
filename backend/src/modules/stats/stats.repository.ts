@@ -1,4 +1,4 @@
-import { prisma } from '../../config/database';
+import { Category, Product, Order, Reservation } from '../../models';
 import { OrdersByStatusDto } from './stats.dto';
 
 /**
@@ -19,41 +19,39 @@ export class StatsRepository {
      * Get total count of categories
      */
     public async getTotalCategories(): Promise<number> {
-        return prisma.category.count();
+        return Category.countDocuments().exec();
     }
 
     /**
      * Get total count of products
      */
     public async getTotalProducts(): Promise<number> {
-        return prisma.product.count();
+        return Product.countDocuments().exec();
     }
 
     /**
      * Get total count of orders (all time)
      */
     public async getTotalOrders(): Promise<number> {
-        return prisma.order.count();
+        return Order.countDocuments().exec();
     }
 
     /**
      * Get total count of reservations (all time)
      */
     public async getTotalReservations(): Promise<number> {
-        return prisma.reservation.count();
+        return Reservation.countDocuments().exec();
     }
 
     /**
      * Get count of orders created today
      */
     public async getOrdersToday(): Promise<number> {
-        return prisma.order.count({
-            where: {
-                createdAt: {
-                    gte: this.getStartOfToday(),
-                },
+        return Order.countDocuments({
+            createdAt: {
+                $gte: this.getStartOfToday(),
             },
-        });
+        }).exec();
     }
 
     /**
@@ -64,14 +62,12 @@ export class StatsRepository {
         const endOfToday = new Date(startOfToday);
         endOfToday.setDate(endOfToday.getDate() + 1);
 
-        return prisma.reservation.count({
-            where: {
-                datetime: {
-                    gte: startOfToday,
-                    lt: endOfToday,
-                },
+        return Reservation.countDocuments({
+            datetime: {
+                $gte: startOfToday,
+                $lt: endOfToday,
             },
-        });
+        }).exec();
     }
 
     /**
@@ -79,19 +75,22 @@ export class StatsRepository {
      * Only counts COMPLETED orders
      */
     public async getRevenueToday(): Promise<number> {
-        const result = await prisma.order.aggregate({
-            _sum: {
-                total: true,
-            },
-            where: {
-                createdAt: {
-                    gte: this.getStartOfToday(),
+        const result = await Order.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: this.getStartOfToday() },
+                    status: 'COMPLETED',
                 },
-                status: 'COMPLETED',
             },
-        });
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: '$total' },
+                },
+            },
+        ]).exec();
 
-        return result._sum.total || 0;
+        return result.length > 0 ? result[0].total : 0;
     }
 
     /**
@@ -102,9 +101,7 @@ export class StatsRepository {
 
         const counts = await Promise.all(
             statuses.map(status =>
-                prisma.order.count({
-                    where: { status },
-                })
+                Order.countDocuments({ status }).exec()
             )
         );
 

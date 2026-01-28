@@ -1,5 +1,4 @@
-import { Product } from '@prisma/client';
-import { prisma } from '../../config/database';
+import { Product, IProduct } from '../../models';
 import { CreateProductDto, UpdateProductDto, ProductFilters } from './products.dto';
 
 /**
@@ -9,94 +8,85 @@ export class ProductsRepository {
     /**
      * Find all products with optional filters
      */
-    public async findAll(filters: ProductFilters): Promise<Product[]> {
-        const where: any = {};
+    public async findAll(filters: ProductFilters): Promise<IProduct[]> {
+        const query: any = {};
 
         if (filters.search) {
-            where.OR = [
-                { name: { contains: filters.search } },
-                { description: { contains: filters.search } },
+            query.$or = [
+                { name: { $regex: filters.search, $options: 'i' } },
+                { description: { $regex: filters.search, $options: 'i' } },
             ];
         }
 
         if (filters.categoryId) {
-            where.categoryId = filters.categoryId;
+            query.categoryId = filters.categoryId;
         }
 
         if (filters.isActive !== undefined) {
-            where.isActive = filters.isActive;
+            query.isActive = filters.isActive;
         }
 
-        return prisma.product.findMany({
-            where,
-            include: {
-                category: true,
-            },
-            orderBy: { createdAt: 'desc' },
-        });
+        return Product.find(query)
+            .populate('categoryId')
+            .sort({ createdAt: -1 })
+            .exec();
     }
 
     /**
      * Find product by ID
      */
-    public async findById(id: string): Promise<Product | null> {
-        return prisma.product.findUnique({
-            where: { id },
-            include: {
-                category: true,
-            },
-        });
+    public async findById(id: string): Promise<IProduct | null> {
+        return Product.findById(id)
+            .populate('categoryId')
+            .exec();
     }
 
     /**
      * Create product
      */
-    public async create(dto: CreateProductDto): Promise<Product> {
-        return prisma.product.create({
-            data: dto,
-            include: {
-                category: true,
-            },
-        });
+    public async create(dto: CreateProductDto): Promise<IProduct> {
+        const product = new Product(dto);
+        await product.save();
+        return Product.findById(product._id).populate('categoryId').exec() as Promise<IProduct>;
     }
 
     /**
      * Update product
      */
-    public async update(id: string, dto: UpdateProductDto): Promise<Product> {
-        return prisma.product.update({
-            where: { id },
-            data: dto,
-            include: {
-                category: true,
-            },
-        });
+    public async update(id: string, dto: UpdateProductDto): Promise<IProduct | null> {
+        return Product.findByIdAndUpdate(
+            id,
+            dto,
+            { new: true }
+        ).populate('categoryId').exec();
     }
 
     /**
      * Toggle active status
      */
-    public async toggleActive(id: string, isActive: boolean): Promise<Product> {
-        return prisma.product.update({
-            where: { id },
-            data: { isActive },
-        });
+    public async toggleActive(id: string, isActive: boolean): Promise<IProduct | null> {
+        return Product.findByIdAndUpdate(
+            id,
+            { isActive },
+            { new: true }
+        ).exec();
     }
 
     /**
      * Toggle featured status
      */
-    public async toggleFeatured(id: string, isFeatured: boolean): Promise<Product> {
-        return prisma.product.update({
-            where: { id },
-            data: { isFeatured },
-        });
+    public async toggleFeatured(id: string, isFeatured: boolean): Promise<IProduct | null> {
+        return Product.findByIdAndUpdate(
+            id,
+            { isFeatured },
+            { new: true }
+        ).exec();
     }
 
     /**
      * Soft delete
      */
-    public async softDelete(id: string): Promise<Product> {
+    public async softDelete(id: string): Promise<IProduct | null> {
         return this.toggleActive(id, false);
     }
 }

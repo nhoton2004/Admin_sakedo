@@ -11,6 +11,7 @@ import {
     Plus,
     Settings,
     Calendar,
+    Truck,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -71,6 +72,12 @@ export const Sidebar: React.FC = () => {
             label: t('dashboard.kpi.reservations'),
             icon: <Calendar className="w-5 h-5" />,
             path: '/admin/reservations',
+        },
+        {
+            id: 'drivers',
+            label: 'Tài xế', // Or use t('nav.drivers') if key exists
+            icon: <Truck className="w-5 h-5" />,
+            path: '/admin/drivers',
         },
         {
             id: 'analytics',

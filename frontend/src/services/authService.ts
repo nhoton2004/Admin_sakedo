@@ -14,6 +14,12 @@ export interface User {
     createdAt: string;
     avatar?: string;
     phone?: string;
+    vehiclePlate?: string;
+    area?: string;
+    driverStatus?: 'AVAILABLE' | 'BUSY' | 'OFFLINE';
+    rating?: number;
+    totalOrders?: number;
+    totalEarnings?: number;
 }
 
 export interface LoginResponse {

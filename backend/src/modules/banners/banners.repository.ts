@@ -1,56 +1,53 @@
-import { DatabaseService } from '../../config/database';
+import { HomeBanner, IHomeBanner } from '../../models';
 import type { CreateBannerInput, UpdateBannerInput } from './banners.dto';
 
 export class BannersRepository {
-    private db = DatabaseService.getInstance();
-
-    async findAll() {
-        return this.db.homeBanner.findMany({
-            orderBy: { order: 'asc' },
-        });
+    async findAll(): Promise<IHomeBanner[]> {
+        return HomeBanner.find().sort({ order: 1 }).exec();
     }
 
-    async findById(id: string) {
-        return this.db.homeBanner.findUnique({
-            where: { id },
-        });
+    async findById(id: string): Promise<IHomeBanner | null> {
+        return HomeBanner.findById(id).exec();
     }
 
-    async create(data: CreateBannerInput) {
-        return this.db.homeBanner.create({
+    async create(data: CreateBannerInput): Promise<IHomeBanner> {
+        const banner = new HomeBanner(data);
+        return banner.save();
+    }
+
+    async update(id: string, data: UpdateBannerInput): Promise<IHomeBanner | null> {
+        return HomeBanner.findByIdAndUpdate(
+            id,
             data,
-        });
+            { new: true }
+        ).exec();
     }
 
-    async update(id: string, data: UpdateBannerInput) {
-        return this.db.homeBanner.update({
-            where: { id },
-            data,
-        });
-    }
-
-    async toggleActive(id: string) {
+    async toggleActive(id: string): Promise<IHomeBanner | null> {
         const banner = await this.findById(id);
         if (!banner) return null;
 
-        return this.db.homeBanner.update({
-            where: { id },
-            data: { isActive: !banner.isActive },
-        });
+        return HomeBanner.findByIdAndUpdate(
+            id,
+            { isActive: !banner.isActive },
+            { new: true }
+        ).exec();
     }
 
-    async updateOrder(id: string, order: number) {
-        return this.db.homeBanner.update({
-            where: { id },
-            data: { order },
-        });
+    async updateOrder(id: string, order: number): Promise<IHomeBanner | null> {
+        return HomeBanner.findByIdAndUpdate(
+            id,
+            { order },
+            { new: true }
+        ).exec();
     }
 
-    async delete(id: string) {
+    async delete(id: string): Promise<IHomeBanner | null> {
         // Soft delete: set isActive to false
-        return this.db.homeBanner.update({
-            where: { id },
-            data: { isActive: false },
-        });
+        return HomeBanner.findByIdAndUpdate(
+            id,
+            { isActive: false },
+            { new: true }
+        ).exec();
     }
 }
