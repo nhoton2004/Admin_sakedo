@@ -142,3 +142,23 @@ model AboutSection {
 // Valid Role values: ADMIN, DRIVER, USER
 // Valid ReservationStatus values: NEW, CONFIRMED, COMPLETED, CANCELED
 // Valid OrderStatus values: PENDING, CONFIRMED, PREPARING, READY, DELIVERING, COMPLETED, CANCELED
+
+model LegacyDriver {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  username      String?
+  password      String?
+  name          String?
+  phone         String?
+  vehiclePlate  String?
+  area          String?
+  status        String?
+  email         String?
+  rating        Float?
+  totalEarnings Float?
+  dailyEarnings Float?
+  failedOrders  Int?
+  avatar        String?
+  createdAt     DateTime? @default(now())
+
+  @@map("drivers")
+}

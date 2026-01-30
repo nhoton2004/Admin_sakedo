@@ -9,7 +9,8 @@
         "content": "Content",
         "profile": "Profile",
         "management": "Management",
-        "menu": "Menu"
+        "menu": "Menu",
+        "drivers": "Drivers"
     },
     "dashboard": {
         "title": "Overview",

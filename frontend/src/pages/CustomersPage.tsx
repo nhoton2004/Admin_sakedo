@@ -18,8 +18,8 @@ const CustomersPage: React.FC = () => {
     const loadCustomers = async () => {
         try {
             // Assuming UserService.getAll can filter by role, or we filter manually if needed
-            // Based on DriversPage which used { role: 'DRIVER' }, we use { role: 'CUSTOMER' }
-            const data = await UserService.getAll({ role: 'CUSTOMER' });
+            // Based on DriversPage which used { role: 'DRIVER' }, we use { role: 'USER' }
+            const data = await UserService.getAll({ role: 'USER' });
             setCustomers(data);
         } catch (error) {
             console.error('Failed to load customers:', error);
