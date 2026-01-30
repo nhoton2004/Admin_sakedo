@@ -35,6 +35,24 @@ async function seed() {
             console.log('ℹ️ Admin user already exists');
         }
 
+        // Create simple admin account (admin/admin123)
+        const simpleAdminEmail = 'admin';
+        const existingSimpleAdmin = await User.findOne({ email: simpleAdminEmail });
+
+        if (!existingSimpleAdmin) {
+            const simplePasswordHash = await bcrypt.hash('admin123', 10);
+            await User.create({
+                name: 'Admin',
+                email: simpleAdminEmail,
+                passwordHash: simplePasswordHash,
+                role: 'ADMIN',
+                isActive: true,
+            });
+            console.log('✅ Created simple admin user:', simpleAdminEmail);
+        } else {
+            console.log('ℹ️ Simple admin user already exists');
+        }
+
         // Create categories
         const categoriesData = [
             { name: 'Beverages', isActive: true },

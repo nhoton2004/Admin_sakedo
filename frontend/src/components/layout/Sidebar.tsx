@@ -8,7 +8,6 @@ import {
     Users,
     BarChart3,
     ChevronDown,
-    Plus,
     Settings,
     Calendar,
     Truck,
@@ -117,11 +116,9 @@ export const Sidebar: React.FC = () => {
         <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-neutral-200 flex flex-col">
             {/* Logo */}
             <div className="p-6 border-b border-neutral-100">
-                <img
-                    src="/sakedo-logo.png"
-                    alt="SAKEDO Restaurant"
-                    className="h-10 w-auto object-contain"
-                />
+                <h1 className="text-xl font-bold text-neutral-800">
+                    SAKEDO Restaurant
+                </h1>
             </div>
 
             {/* Navigation */}
@@ -186,22 +183,6 @@ export const Sidebar: React.FC = () => {
                     ))}
                 </ul>
             </nav>
-
-            {/* CTA Card */}
-            <div className="p-4">
-                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-5 text-white">
-                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3">
-                        <Plus className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-1">{t('products.addProduct')}</h3>
-                    <p className="text-sm text-white/80 mb-4">
-                        {t('products.featuredDesc')}
-                    </p>
-                    <button className="w-full bg-white text-purple-600 font-medium py-2 rounded-lg hover:bg-white/90 transition-colors text-sm">
-                        {t('common.add')}
-                    </button>
-                </div>
-            </div>
 
             {/* Footer */}
             <div className="p-4 border-t border-neutral-100">
