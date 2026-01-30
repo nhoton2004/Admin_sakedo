@@ -2,6 +2,7 @@ import { apiClient } from './apiClient';
 
 export interface Product {
     id: string;
+    _id?: string; // MongoDB ID field
     categoryId: string;
     name: string;
     description: string;
@@ -44,38 +45,49 @@ export interface ProductFilters {
  * Product API Service
  */
 export class ProductService {
+    /**
+     * Transform backend response to frontend format
+     * Maps MongoDB _id to id for consistency
+     */
+    private static transformProduct(product: any): Product {
+        return {
+            ...product,
+            id: product._id || product.id
+        };
+    }
+
     static async getAll(filters: ProductFilters = {}): Promise<Product[]> {
         const params = new URLSearchParams();
         if (filters.search) params.append('search', filters.search);
         if (filters.categoryId) params.append('categoryId', filters.categoryId);
         if (filters.isActive !== undefined) params.append('isActive', String(filters.isActive));
 
-        const response = await apiClient.get<Product[]>(`/admin/products?${params.toString()}`);
-        return response.data;
+        const response = await apiClient.get<any[]>(`/admin/products?${params.toString()}`);
+        return response.data.map(ProductService.transformProduct);
     }
 
     static async create(dto: CreateProductDto): Promise<Product> {
-        const response = await apiClient.post<Product>('/admin/products', dto);
-        return response.data;
+        const response = await apiClient.post<any>('/admin/products', dto);
+        return ProductService.transformProduct(response.data);
     }
 
     static async update(id: string, dto: UpdateProductDto): Promise<Product> {
-        const response = await apiClient.put<Product>(`/admin/products/${id}`, dto);
-        return response.data;
+        const response = await apiClient.put<any>(`/admin/products/${id}`, dto);
+        return ProductService.transformProduct(response.data);
     }
 
     static async toggleActive(id: string): Promise<Product> {
-        const response = await apiClient.patch<Product>(`/admin/products/${id}/toggle-active`);
-        return response.data;
+        const response = await apiClient.patch<any>(`/admin/products/${id}/toggle-active`);
+        return ProductService.transformProduct(response.data);
     }
 
     static async toggleFeatured(id: string): Promise<Product> {
-        const response = await apiClient.patch<Product>(`/admin/products/${id}/toggle-featured`);
-        return response.data;
+        const response = await apiClient.patch<any>(`/admin/products/${id}/toggle-featured`);
+        return ProductService.transformProduct(response.data);
     }
 
     static async delete(id: string): Promise<Product> {
-        const response = await apiClient.delete<Product>(`/admin/products/${id}`);
-        return response.data;
+        const response = await apiClient.delete<any>(`/admin/products/${id}`);
+        return ProductService.transformProduct(response.data);
     }
 }

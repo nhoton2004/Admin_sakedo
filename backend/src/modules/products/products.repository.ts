@@ -1,10 +1,11 @@
 import { Product, IProduct } from '../../models';
 import { CreateProductDto, UpdateProductDto, ProductFilters } from './products.dto';
+import { IProductRepository } from '../../common/interfaces';
 
 /**
  * Repository for Product database operations
  */
-export class ProductsRepository {
+export class ProductsRepository implements IProductRepository {
     /**
      * Find all products with optional filters
      */

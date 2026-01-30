@@ -2,19 +2,30 @@ import { IProduct } from '../../models';
 import { AppError } from '../../common/middleware/error.middleware';
 import { CreateProductDto, UpdateProductDto, ProductFilters } from './products.dto';
 import { ProductsRepository } from './products.repository';
+import { BaseService } from '../../common/base';
+import { IProductRepository } from '../../common/interfaces';
 
 /**
  * Service for product business logic
+ * Extends BaseService for CRUD operations (Inheritance)
  */
-export class ProductsService {
-    private repository: ProductsRepository;
+export class ProductsService extends BaseService<IProduct> {
+    // Type-safe repository access
+    protected repository: IProductRepository;
 
     constructor() {
-        this.repository = new ProductsRepository();
+        const repository = new ProductsRepository();
+        super(repository);
+        this.repository = repository;
+    }
+
+    protected get entityName(): string {
+        return 'Product';
     }
 
     /**
      * Get all products with filters
+     * Overrides base implementation for custom filters
      */
     public async getAll(filters: ProductFilters): Promise<IProduct[]> {
         return this.repository.findAll(filters);

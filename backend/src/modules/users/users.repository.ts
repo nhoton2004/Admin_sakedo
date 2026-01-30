@@ -1,10 +1,11 @@
 import { User, IUser } from '../../models';
 import { CreateUserDto, UserFilters } from './users.dto';
+import { IUserRepository } from '../../common/interfaces';
 
 /**
  * Repository for User database operations
  */
-export class UsersRepository {
+export class UsersRepository implements IUserRepository {
     /**
      * Find all users with filters
      */
@@ -33,6 +34,13 @@ export class UsersRepository {
     }
 
     /**
+     * Find users by role
+     */
+    public async findByRole(role: string): Promise<IUser[]> {
+        return User.find({ role }).select('-passwordHash').sort({ createdAt: -1 }).exec();
+    }
+
+    /**
      * Create user
      */
     public async create(data: {
@@ -54,5 +62,12 @@ export class UsersRepository {
             { isActive },
             { new: true }
         ).exec();
+    }
+
+    /**
+     * Update user
+     */
+    public async update(id: string, data: any): Promise<IUser | null> {
+        return User.findByIdAndUpdate(id, data, { new: true }).exec();
     }
 }

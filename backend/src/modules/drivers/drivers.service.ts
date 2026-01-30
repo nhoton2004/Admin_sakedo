@@ -1,27 +1,46 @@
 import { User, IUser } from '../../models';
 import { AppError } from '../../common/middleware/error.middleware';
 import * as bcrypt from 'bcrypt';
+import { BaseService } from '../../common/base';
+import { IUserRepository } from '../../common/interfaces';
+import { UsersRepository } from '../users/users.repository';
 
-export class DriverService {
+/**
+ * Driver Service
+ * Extends BaseService for common CRUD operations (Inheritance & OOP)
+ */
+export class DriverService extends BaseService<IUser> {
+    protected repository: IUserRepository;
+
+    constructor() {
+        const repository = new UsersRepository();
+        super(repository);
+        this.repository = repository;
+    }
+
+    protected get entityName(): string {
+        return 'Driver';
+    }
+
     /**
      * Get all drivers
      */
-    static async getAll() {
-        return User.find({ role: 'DRIVER' }).select('-passwordHash').sort({ createdAt: -1 });
+    async getAll(): Promise<IUser[]> {
+        return this.repository.findByRole('DRIVER');
     }
 
     /**
      * Create new driver
      */
-    static async create(data: any) {
-        const existingUser = await User.findOne({ email: data.email });
+    async create(data: any): Promise<any> {
+        const existingUser = await this.repository.findByEmail(data.email);
         if (existingUser) {
             throw new AppError(400, 'Email already exists');
         }
 
         const passwordHash = await bcrypt.hash(data.password, 10);
 
-        const driver = await User.create({
+        const driver = await this.repository.create({
             ...data,
             passwordHash,
             role: 'DRIVER',
@@ -31,6 +50,7 @@ export class DriverService {
             totalEarnings: 0
         });
 
+        // Remove password hash from response
         const { passwordHash: _, ...driverData } = driver.toObject();
         return driverData;
     }
@@ -38,7 +58,7 @@ export class DriverService {
     /**
      * Update driver
      */
-    static async update(id: string, data: any) {
+    async update(id: string, data: any): Promise<IUser> {
         const driver = await User.findOneAndUpdate(
             { _id: id, role: 'DRIVER' },
             data,
@@ -55,7 +75,7 @@ export class DriverService {
     /**
      * Get driver stats
      */
-    static async getStats() {
+    async getStats(): Promise<any> {
         const stats = await User.aggregate([
             { $match: { role: 'DRIVER' } },
             {

@@ -1,10 +1,12 @@
 import { Order, IOrder } from '../../models';
 import { OrderFilters } from './orders.dto';
+import { OrderStatus } from '../../common/types/enums';
+import { IOrderRepository } from '../../common/interfaces';
 
 /**
  * Repository for Order database operations
  */
-export class OrdersRepository {
+export class OrdersRepository implements IOrderRepository {
     /**
      * Find all orders with filters
      */
@@ -58,6 +60,26 @@ export class OrdersRepository {
             { assignedDriverId: driverId },
             { new: true }
         )
+            .populate('customerId')
+            .populate('assignedDriverId')
+            .populate('items.productId')
+            .exec();
+    }
+
+    /**
+     * Create order (placeholder - orders are usually created via customer app)
+     */
+    public async create(data: any): Promise<IOrder> {
+        const order = new Order(data);
+        await order.save();
+        return this.findById(order._id.toString()) as Promise<IOrder>;
+    }
+
+    /**
+     * Update order (placeholder - most updates go through specific methods)
+     */
+    public async update(id: string, data: any): Promise<IOrder | null> {
+        return Order.findByIdAndUpdate(id, data, { new: true })
             .populate('customerId')
             .populate('assignedDriverId')
             .populate('items.productId')
