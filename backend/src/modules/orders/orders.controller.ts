@@ -32,6 +32,20 @@ export class OrdersController {
     };
 
     /**
+     * GET /admin/orders/pending-count
+     */
+    public getPendingCount = async (req: AuthRequest, res: Response): Promise<void> => {
+        try {
+            const count = await this.service.getPendingCount();
+            res.json({ count });
+        } catch (error: any) {
+            res.status(error.statusCode || 500).json({
+                message: error.message || 'Failed to get pending count',
+            });
+        }
+    };
+
+    /**
      * GET /admin/orders/:id
      */
     public getById = async (req: AuthRequest, res: Response): Promise<void> => {

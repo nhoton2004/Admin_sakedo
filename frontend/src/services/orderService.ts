@@ -79,4 +79,9 @@ export class OrderService {
         const response = await apiClient.patch<Order>(`/admin/orders/${id}/cancel`);
         return response.data;
     }
+
+    static async getPendingCount(): Promise<number> {
+        const response = await apiClient.get<{ count: number }>('/admin/orders/pending-count');
+        return response.data.count;
+    }
 }

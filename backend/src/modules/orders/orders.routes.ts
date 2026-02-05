@@ -5,6 +5,7 @@ const router = Router();
 const controller = new OrdersController();
 
 router.get('/', controller.getAll);
+router.get('/pending-count', controller.getPendingCount);
 router.get('/:id', controller.getById);
 router.patch('/:id/confirm', controller.confirm);
 router.patch('/:id/preparing', controller.preparing);

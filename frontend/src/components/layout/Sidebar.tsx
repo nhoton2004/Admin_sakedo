@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNotifications } from '../../contexts/NotificationContext';
 import {
     LayoutDashboard,
     ShoppingBag,
@@ -30,6 +31,8 @@ interface SubMenuItem {
 export const Sidebar: React.FC = () => {
     const { t } = useTranslation();
     const location = useLocation();
+    const { pendingCount } = useNotifications();
+    const [openMenu, setOpenMenu] = useState<string | null>(null);
     const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
     const menuItems: MenuItem[] = [
@@ -41,7 +44,7 @@ export const Sidebar: React.FC = () => {
         },
         {
             id: 'orders',
-            label: t('nav.orders'),
+            label: pendingCount > 0 ? `${t('nav.orders')} (${pendingCount})` : t('nav.orders'),
             icon: <ShoppingBag className="w-5 h-5" />,
             path: '/admin/orders',
         },

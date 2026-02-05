@@ -7,6 +7,22 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { ChevronRight, User as UserIcon, Phone, DollarSign, Calendar, Truck } from 'lucide-react';
 
+// Map legacy numeric status (from old DB) to string keys for translation
+const STATUS_MAP: Record<string, string> = {
+    '0': 'PENDING',
+    '1': 'CONFIRMED',
+    '2': 'PREPARING',
+    '3': 'READY',
+    '4': 'DELIVERING',
+    '5': 'COMPLETED',
+    '6': 'CANCELED',
+};
+
+const getStatusKey = (status: string | number): string => {
+    const statusStr = String(status);
+    return STATUS_MAP[statusStr] || statusStr;
+};
+
 const OrdersPage: React.FC = () => {
     const { t } = useTranslation();
     const [orders, setOrders] = useState<Order[]>([]);
@@ -170,7 +186,7 @@ const OrdersPage: React.FC = () => {
                                     </div>
                                 </div>
                                 <Badge variant={getStatusVariant(order.status)}>
-                                    {t(`orders.status.${order.status}`)}
+                                    {t(`orders.status.${getStatusKey(order.status)}`)}
                                 </Badge>
                             </div>
 

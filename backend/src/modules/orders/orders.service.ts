@@ -26,6 +26,14 @@ export class OrdersService {
     }
 
     /**
+     * Get count of PENDING orders
+     */
+    public async getPendingCount(): Promise<number> {
+        const pendingOrders = await this.repository.findAll({ status: OrderStatus.PENDING });
+        return pendingOrders.length;
+    }
+
+    /**
      * Get order by ID
      */
     public async getById(id: string): Promise<IOrder> {
