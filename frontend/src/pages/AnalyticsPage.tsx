@@ -10,46 +10,101 @@ import { ChevronRight } from 'lucide-react';
 
 const AnalyticsPage: React.FC = () => {
     const { t } = useTranslation();
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
+    const [kpis, setKpis] = React.useState<any[]>([]);
+    const [weeklySales, setWeeklySales] = React.useState<any[]>([]);
+    const [bestSellers, setBestSellers] = React.useState<any[]>([]);
 
-    // Empty data for clean state
-    const kpis = [
-        {
-            id: 1,
-            title: t('dashboard.kpi.totalCategories'),
-            value: 0,
-            percentage: 0,
-            change: '0%',
-            color: '#FF6A3D',
-        },
-        {
-            id: 2,
-            title: t('dashboard.kpi.totalProducts'),
-            value: 0,
-            percentage: 0,
-            change: '0%',
-            color: '#10B981',
-        },
-        {
-            id: 3,
-            title: t('dashboard.kpi.totalOrders'),
-            value: 0,
-            percentage: 0,
-            change: '0%',
-            color: '#7C5CFF',
-        },
-        {
-            id: 4,
-            title: t('dashboard.kpi.reservations'),
-            value: 0,
-            percentage: 0,
-            change: '0%',
-            color: '#F59E0B',
-        },
-    ];
+    React.useEffect(() => {
+        loadAnalytics();
+    }, []);
 
-    const weeklySales: any[] = [];
+    const loadAnalytics = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            // For now, use empty data since backend might not be fully ready
+            // TODO: Uncomment when backend analytics is ready
+            // const data = await AnalyticsService.getAnalytics(30);
+
+            // Fallback to empty data
+            const fallbackKpis = [
+                {
+                    id: 1,
+                    title: t('dashboard.kpi.totalCategories'),
+                    value: 0,
+                    percentage: 0,
+                    change: '0%',
+                    color: '#FF6A3D',
+                },
+                {
+                    id: 2,
+                    title: t('dashboard.kpi.totalProducts'),
+                    value: 0,
+                    percentage: 0,
+                    change: '0%',
+                    color: '#10B981',
+                },
+                {
+                    id: 3,
+                    title: t('dashboard.kpi.totalOrders'),
+                    value: 0,
+                    percentage: 0,
+                    change: '0%',
+                    color: '#7C5CFF',
+                },
+                {
+                    id: 4,
+                    title: t('dashboard.kpi.reservations'),
+                    value: 0,
+                    percentage: 0,
+                    change: '0%',
+                    color: '#F59E0B',
+                },
+            ];
+
+            setKpis(fallbackKpis);
+            setWeeklySales([]);
+            setBestSellers([]);
+        } catch (err: any) {
+            console.error('Failed to load analytics:', err);
+            setError(err.message || 'Failed to load analytics data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <AdminLayout>
+                <div className="flex items-center justify-center h-64">
+                    <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </AdminLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <AdminLayout>
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <p className="text-red-500 mb-4">{error}</p>
+                        <button
+                            onClick={loadAnalytics}
+                            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600"
+                        >
+                            {t('common.retry') || 'Retry'}
+                        </button>
+                    </div>
+                </div>
+            </AdminLayout>
+        );
+    }
+
     const customerMap: any[] = [];
-    const bestSellers: any[] = [];
 
     return (
         <AdminLayout>

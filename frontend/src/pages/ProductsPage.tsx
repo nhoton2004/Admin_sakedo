@@ -42,7 +42,9 @@ const ProductsPage: React.FC = () => {
     const loadProducts = async () => {
         try {
             const data = await ProductService.getAll(filters);
-            setProducts(data);
+            // Only show active products (filter out soft-deleted ones)
+            const activeProducts = data.filter(p => p.isActive !== false);
+            setProducts(activeProducts);
         } finally {
             setLoading(false);
         }
@@ -83,14 +85,28 @@ const ProductsPage: React.FC = () => {
     };
 
     const handleToggleFeatured = async (id: string) => {
-        await ProductService.toggleFeatured(id);
-        loadProducts();
+        try {
+            await ProductService.toggleFeatured(id);
+            await loadProducts();
+        } catch (error) {
+            console.error('Failed to toggle featured:', error);
+            alert('Không thể cập nhật trạng thái nổi bật. Vui lòng thử lại.');
+        }
     };
 
     const handleDelete = async (id: string) => {
-        if (confirm(t('common.confirm'))) {
+        if (!confirm(t('common.confirm') + '? Bạn có chắc muốn xóa sản phẩm này?')) {
+            return;
+        }
+
+        try {
             await ProductService.delete(id);
-            loadProducts();
+            await loadProducts();
+            alert('Đã xóa sản phẩm thành công!');
+        } catch (error: any) {
+            console.error('Failed to delete product:', error);
+            const errorMsg = error.response?.data?.message || 'Không thể xóa sản phẩm. Vui lòng thử lại.';
+            alert(errorMsg);
         }
     };
 

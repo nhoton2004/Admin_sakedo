@@ -41,4 +41,13 @@ export class DriverService {
         const response = await apiClient.get<DriverStats>('/admin/drivers/stats');
         return response.data;
     }
+
+    static async toggleActive(id: string): Promise<User> {
+        const response = await apiClient.patch<User>(`/admin/drivers/${id}/toggle-active`);
+        return response.data;
+    }
+
+    static async delete(id: string): Promise<void> {
+        await apiClient.delete(`/admin/drivers/${id}`);
+    }
 }

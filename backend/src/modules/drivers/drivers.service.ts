@@ -92,4 +92,34 @@ export class DriverService extends BaseService<IUser> {
 
         return stats[0] || { totalDrivers: 0, activeDrivers: 0, totalEarnings: 0 };
     }
+
+    /**
+     * Toggle driver active status
+     */
+    async toggleActive(id: string): Promise<IUser> {
+        const driver = await User.findOne({ _id: id, role: 'DRIVER' }).select('-passwordHash');
+
+        if (!driver) {
+            throw new AppError(404, 'Driver not found');
+        }
+
+        driver.isActive = !driver.isActive;
+        await driver.save();
+
+        return driver;
+    }
+
+    /**
+     * Delete driver (soft delete by setting isActive = false)
+     */
+    async delete(id: string): Promise<void> {
+        const driver = await User.findOne({ _id: id, role: 'DRIVER' });
+
+        if (!driver) {
+            throw new AppError(404, 'Driver not found');
+        }
+
+        // Soft delete: set isActive to false instead of removing from DB
+        await User.findByIdAndDelete(id);
+    }
 }

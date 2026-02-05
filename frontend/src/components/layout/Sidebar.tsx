@@ -30,7 +30,7 @@ interface SubMenuItem {
 export const Sidebar: React.FC = () => {
     const { t } = useTranslation();
     const location = useLocation();
-    const [expandedMenus, setExpandedMenus] = useState<string[]>(['analytics']);
+    const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
     const menuItems: MenuItem[] = [
         {
@@ -44,10 +44,6 @@ export const Sidebar: React.FC = () => {
             label: t('nav.orders'),
             icon: <ShoppingBag className="w-5 h-5" />,
             path: '/admin/orders',
-            submenu: [
-                { id: 'new-order', label: t('common.add'), path: '/admin/orders/new' },
-                { id: 'order-list', label: t('nav.orders'), path: '/admin/orders' },
-            ],
         },
         {
             id: 'menus',
@@ -55,7 +51,6 @@ export const Sidebar: React.FC = () => {
             icon: <UtensilsCrossed className="w-5 h-5" />,
             path: '/admin/products',
             submenu: [
-                { id: 'add-menu', label: t('products.addProduct'), path: '/admin/products/new' },
                 { id: 'menu-list', label: t('nav.menus'), path: '/admin/products' },
                 { id: 'categories', label: t('categories.title'), path: '/admin/categories' },
             ],

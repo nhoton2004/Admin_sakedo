@@ -51,4 +51,30 @@ export class DriverController {
             next(error);
         }
     }
+
+    /**
+     * PATCH /admin/drivers/:id/toggle-active
+     */
+    static async toggleActive(req: Request, res: Response, next: NextFunction) {
+        try {
+            const controller = new DriverController();
+            const driver = await controller.service.toggleActive(req.params.id);
+            res.json(driver);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * DELETE /admin/drivers/:id
+     */
+    static async delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const controller = new DriverController();
+            await controller.service.delete(req.params.id);
+            res.status(204).send();
+        } catch (error) {
+            next(error);
+        }
+    }
 }

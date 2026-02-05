@@ -13,8 +13,10 @@ import {
     DollarSign,
     MapPin,
     Phone,
-    MoreVertical,
-    Plus
+    Plus,
+    ToggleLeft,
+    ToggleRight,
+    Trash2
 } from 'lucide-react';
 
 export const DriversPage: React.FC = () => {
@@ -62,6 +64,26 @@ export const DriversPage: React.FC = () => {
             loadData();
         } catch (error) {
             alert('Failed to create driver');
+        }
+    };
+
+    const handleToggleActive = async (id: string) => {
+        try {
+            await DriverService.toggleActive(id);
+            loadData();
+        } catch (error) {
+            alert('Không thể cập nhật trạng thái tài xế');
+        }
+    };
+
+    const handleDelete = async (id: string, name: string) => {
+        if (confirm(`Bạn có chắc muốn xóa tài xế "${name}"?`)) {
+            try {
+                await DriverService.delete(id);
+                loadData();
+            } catch (error) {
+                alert('Không thể xóa tài xế');
+            }
         }
     };
 
@@ -134,7 +156,7 @@ export const DriversPage: React.FC = () => {
             {/* Drivers List */}
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {drivers.map((driver) => (
-                    <Card key={driver.id} hover className="group">
+                    <Card key={driver.id} hover className={`group ${!driver.isActive ? 'opacity-60' : ''}`}>
                         <div className="p-5">
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
@@ -151,15 +173,34 @@ export const DriversPage: React.FC = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-neutral-900">{driver.name}</h3>
-                                        <div className="flex items-center gap-1 text-yellow-500 text-sm">
-                                            <Star className="w-3.5 h-3.5 fill-current" />
-                                            <span className="font-medium">{driver.rating || 5.0}</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1 text-yellow-500 text-sm">
+                                                <Star className="w-3.5 h-3.5 fill-current" />
+                                                <span className="font-medium">{driver.rating || 5.0}</span>
+                                            </div>
+                                            {!driver.isActive && <Badge variant="neutral">Tạm dừng</Badge>}
                                         </div>
                                     </div>
                                 </div>
-                                <button className="p-1 text-neutral-400 hover:text-primary rounded-lg hover:bg-neutral-50 transition-colors">
-                                    <MoreVertical className="w-5 h-5" />
-                                </button>
+                                <div className="flex gap-1">
+                                    <button
+                                        onClick={() => handleToggleActive(driver.id)}
+                                        className={`p-2 rounded-lg transition-colors ${driver.isActive
+                                                ? 'text-orange-600 hover:bg-orange-50'
+                                                : 'text-green-600 hover:bg-green-50'
+                                            }`}
+                                        title={driver.isActive ? 'Tạm dừng' : 'Kích hoạt'}
+                                    >
+                                        {driver.isActive ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(driver.id, driver.name)}
+                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        title="Xóa tài xế"
+                                    >
+                                        <Trash2 className="w-5 h-5" />
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="space-y-2 mb-4">

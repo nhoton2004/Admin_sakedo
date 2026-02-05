@@ -21,7 +21,7 @@ export interface Order {
     note?: string;
     total: number;
     status: 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'READY' | 'DELIVERING' | 'COMPLETED' | 'CANCELED';
-    assignedDriverId?: string;
+    assignedDriverId?: string | { id: string; name: string;[key: string]: any };
     createdAt: string;
     items?: OrderItem[];
     assignedDriver?: {

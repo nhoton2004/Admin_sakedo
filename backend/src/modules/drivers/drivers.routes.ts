@@ -11,6 +11,8 @@ router.use(AuthMiddleware.requireAdmin);
 router.get('/', DriverController.getAll);
 router.post('/', DriverController.create);
 router.get('/stats', DriverController.getStats);
+router.patch('/:id/toggle-active', DriverController.toggleActive);
 router.patch('/:id', DriverController.update);
+router.delete('/:id', DriverController.delete);
 
 export const driverRoutes = router;

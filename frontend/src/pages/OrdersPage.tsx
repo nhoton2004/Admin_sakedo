@@ -23,45 +23,81 @@ const OrdersPage: React.FC = () => {
 
     const loadOrders = async () => {
         try {
+            setLoading(true);
             const data = await OrderService.getAll(filters);
             setOrders(data);
+            console.log('Orders loaded:', data.length);
+        } catch (error) {
+            console.error('Failed to load orders:', error);
+            // Don't crash the page, just show empty state
+            setOrders([]);
         } finally {
             setLoading(false);
         }
     };
 
     const loadDrivers = async () => {
-        const data = await UserService.getAll({ role: 'DRIVER' });
-        setDrivers(data.filter((d) => d.isActive));
+        try {
+            const data = await UserService.getAll({ role: 'DRIVER' });
+            setDrivers(data.filter((d) => d.isActive));
+        } catch (error) {
+            console.error('Failed to load drivers:', error);
+            setDrivers([]);
+        }
     };
 
     const handleConfirm = async (id: string) => {
-        await OrderService.confirm(id);
-        loadOrders();
+        try {
+            await OrderService.confirm(id);
+            await loadOrders();
+        } catch (error) {
+            console.error('Failed to confirm order:', error);
+            alert('Failed to confirm order. Please try again.');
+        }
     };
 
     const handlePreparing = async (id: string) => {
-        await OrderService.preparing(id);
-        loadOrders();
+        try {
+            await OrderService.preparing(id);
+            await loadOrders();
+        } catch (error) {
+            console.error('Failed to set preparing:', error);
+            alert('Failed to update order status. Please try again.');
+        }
     };
 
     const handleReady = async (id: string) => {
-        await OrderService.ready(id);
-        loadOrders();
+        try {
+            await OrderService.ready(id);
+            await loadOrders();
+        } catch (error) {
+            console.error('Failed to set ready:', error);
+            alert('Failed to update order status. Please try again.');
+        }
     };
 
     const handleAssignDriver = async () => {
         if (!selectedOrder || !selectedDriver) return;
-        await OrderService.assignDriver(selectedOrder.id, { driverId: selectedDriver });
-        setSelectedOrder(null);
-        setSelectedDriver('');
-        loadOrders();
+        try {
+            await OrderService.assignDriver(selectedOrder.id, { driverId: selectedDriver });
+            setSelectedOrder(null);
+            setSelectedDriver('');
+            await loadOrders();
+        } catch (error) {
+            console.error('Failed to assign driver:', error);
+            alert('Failed to assign driver. Please try again.');
+        }
     };
 
     const handleCancel = async (id: string) => {
         if (confirm(t('common.confirm'))) {
-            await OrderService.cancel(id);
-            loadOrders();
+            try {
+                await OrderService.cancel(id);
+                await loadOrders();
+            } catch (error) {
+                console.error('Failed to cancel order:', error);
+                alert('Failed to cancel order. Please try again.');
+            }
         }
     };
 
@@ -133,7 +169,9 @@ const OrdersPage: React.FC = () => {
                                         <span>{order.phone}</span>
                                     </div>
                                 </div>
-                                <Badge variant={getStatusVariant(order.status)}>{t(`orders.status.${order.status}`)}</Badge>
+                                <Badge variant={getStatusVariant(order.status)}>
+                                    {t(`orders.status.${order.status}`)}
+                                </Badge>
                             </div>
 
                             {/* Details */}
@@ -143,21 +181,27 @@ const OrdersPage: React.FC = () => {
                                         <DollarSign className="w-4 h-4" />
                                         {t('orders.amount')}
                                     </span>
-                                    <span className="font-bold text-primary">${order.total.toFixed(2)}</span>
+                                    <span className="font-bold text-primary">{(order.total || 0).toLocaleString('vi-VN')} ₫</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-neutral-500 flex items-center gap-2">
                                         <Truck className="w-4 h-4" />
                                         {t('orders.driver')}
                                     </span>
-                                    <span className="font-medium text-neutral-700">{order.assignedDriver?.name || '-'}</span>
+                                    <span className="font-medium text-neutral-700">
+                                        {order.assignedDriver?.name ||
+                                            (typeof order.assignedDriverId === 'object' && order.assignedDriverId?.name) ||
+                                            '-'}
+                                    </span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-neutral-500 flex items-center gap-2">
                                         <Calendar className="w-4 h-4" />
                                         {t('orders.date')}
                                     </span>
-                                    <span className="text-neutral-600">{new Date(order.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-neutral-600">
+                                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '-'}
+                                    </span>
                                 </div>
                             </div>
 

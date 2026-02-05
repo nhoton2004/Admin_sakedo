@@ -37,6 +37,14 @@ const UserSchema = new Schema<IUser>({
 }, {
     timestamps: true,
     collection: 'users',
+    toJSON: {
+        transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.__v;
+            return ret;
+        }
+    }
 });
 
 export const User = mongoose.model<IUser>('User', UserSchema);

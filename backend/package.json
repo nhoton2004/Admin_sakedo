@@ -7,7 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "build": "tsc",
     "start": "node dist/app.js",
-    "seed": "ts-node src/scripts/seed.ts"
+    "seed": "ts-node src/scripts/seed.ts",
+    "update-images": "ts-node src/scripts/update-product-images.ts",
+    "fix-products": "ts-node src/scripts/fix-products.ts"
   },
   "keywords": [],
   "author": "",

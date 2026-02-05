@@ -49,7 +49,10 @@
         "error": "Có lỗi xảy ra",
         "success": "Thành công",
         "preview": "Xem trước",
-        "imagePreview": "Xem trước hình ảnh"
+        "imagePreview": "Xem trước hình ảnh",
+        "name": "Họ tên",
+        "email": "Email",
+        "phone": "Số điện thoại"
     },
     "auth": {
         "loginTitle": "Đăng Nhập",
@@ -58,7 +61,8 @@
         "password": "Mật khẩu",
         "loginButton": "Đăng nhập",
         "loggingIn": "Đang đăng nhập...",
-        "logout": "Đăng xuất"
+        "logout": "Đăng xuất",
+        "createdAt": "Ngày tạo"
     },
     "categories": {
         "title": "Quản lý Danh mục",
