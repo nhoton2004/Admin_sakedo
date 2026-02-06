@@ -47,10 +47,21 @@ export interface OrderStatusDistributionDto {
 }
 
 /**
+ * KPI data
+ */
+export interface KpisDto {
+    totalCategories: number;
+    totalProducts: number;
+    totalOrders: number;
+    totalReservations: number;
+}
+
+/**
  * Complete analytics response
  */
 export interface AnalyticsDto {
     dailyRevenue: DailyRevenueDto[];
     topProducts: TopProductDto[];
     orderStatusDistribution: OrderStatusDistributionDto[];
+    kpis: KpisDto;
 }

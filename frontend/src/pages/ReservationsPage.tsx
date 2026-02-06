@@ -34,20 +34,38 @@ const ReservationsPage: React.FC = () => {
     };
 
     const handleConfirm = async (id: string) => {
-        await ReservationService.confirm(id);
-        loadReservations();
+        try {
+            await ReservationService.confirm(id);
+            await loadReservations();
+            alert('Đã xác nhận đặt bàn thành công!');
+        } catch (error: any) {
+            console.error('Failed to confirm:', error);
+            alert(error.response?.data?.message || 'Không thể xác nhận. Vui lòng thử lại.');
+        }
     };
 
     const handleCancel = async (id: string) => {
-        if (confirm(t('common.confirm'))) {
-            await ReservationService.cancel(id);
-            loadReservations();
+        if (confirm('Bạn có chắc muốn hủy đặt bàn này?')) {
+            try {
+                await ReservationService.cancel(id);
+                await loadReservations();
+                alert('Đã hủy đặt bàn thành công!');
+            } catch (error: any) {
+                console.error('Failed to cancel:', error);
+                alert(error.response?.data?.message || 'Không thể hủy. Vui lòng thử lại.');
+            }
         }
     };
 
     const handleComplete = async (id: string) => {
-        await ReservationService.complete(id);
-        loadReservations();
+        try {
+            await ReservationService.complete(id);
+            await loadReservations();
+            alert('Đã hoàn tất đặt bàn thành công!');
+        } catch (error: any) {
+            console.error('Failed to complete:', error);
+            alert(error.response?.data?.message || 'Không thể hoàn tất. Vui lòng thử lại.');
+        }
     };
 
     const getStatusVariant = (status: string) => {

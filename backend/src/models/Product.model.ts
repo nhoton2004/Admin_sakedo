@@ -8,6 +8,7 @@ export interface IProduct extends Document {
     imageUrl?: string;
     isActive: boolean;
     isFeatured: boolean;
+    isDeleted: boolean;
     createdAt: Date;
 }
 
@@ -19,6 +20,7 @@ const ProductSchema = new Schema<IProduct>({
     imageUrl: { type: String },
     isActive: { type: Boolean, default: true },
     isFeatured: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
 }, {
     timestamps: true,
     collection: 'products',

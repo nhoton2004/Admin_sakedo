@@ -45,9 +45,11 @@
         "active": "Hoạt động",
         "inactive": "Ngừng hoạt động",
         "confirm": "Xác nhận",
+        "confirmDelete": "Xác nhận xóa",
         "retry": "Thử lại",
         "error": "Có lỗi xảy ra",
         "success": "Thành công",
+        "saveChanges": "Lưu thay đổi",
         "preview": "Xem trước",
         "imagePreview": "Xem trước hình ảnh",
         "name": "Họ tên",
@@ -107,8 +109,11 @@
         "time": "Giờ",
         "guests": "Số khách",
         "notes": "Ghi chú",
+        "complete": "Hoàn tất",
+        "people": "khách",
         "status": {
             "PENDING": "Chờ xác nhận",
+            "NEW": "Mới",
             "CONFIRMED": "Đã xác nhận",
             "COMPLETED": "Hoàn thành",
             "CANCELLED": "Đã hủy"

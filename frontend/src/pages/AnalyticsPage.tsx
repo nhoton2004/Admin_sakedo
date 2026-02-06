@@ -8,6 +8,8 @@ import { BestSellerList } from '../components/analytics/BestSellerList';
 import { FloatingActions } from '../components/ui/FloatingActions';
 import { ChevronRight } from 'lucide-react';
 
+import { AnalyticsService } from '../services'; // Ensure AnalyticsService is exported from services index
+
 const AnalyticsPage: React.FC = () => {
     const { t } = useTranslation();
     const [loading, setLoading] = React.useState(true);
@@ -18,23 +20,26 @@ const AnalyticsPage: React.FC = () => {
 
     React.useEffect(() => {
         loadAnalytics();
+
+        // Auto-refresh analytics every 30 seconds
+        const interval = setInterval(loadAnalytics, 30000);
+        return () => clearInterval(interval);
     }, []);
 
     const loadAnalytics = async () => {
         try {
-            setLoading(true);
+            // Don't set loading on background refresh
+            if (kpis.length === 0) setLoading(true);
             setError(null);
 
-            // For now, use empty data since backend might not be fully ready
-            // TODO: Uncomment when backend analytics is ready
-            // const data = await AnalyticsService.getAnalytics(30);
+            const data = await AnalyticsService.getAnalytics(30);
 
-            // Fallback to empty data
-            const fallbackKpis = [
+            // Map Backend KPIs to UI KPIs
+            const realKpis = [
                 {
                     id: 1,
                     title: t('dashboard.kpi.totalCategories'),
-                    value: 0,
+                    value: data.kpis?.totalCategories || 0,
                     percentage: 0,
                     change: '0%',
                     color: '#FF6A3D',
@@ -42,7 +47,7 @@ const AnalyticsPage: React.FC = () => {
                 {
                     id: 2,
                     title: t('dashboard.kpi.totalProducts'),
-                    value: 0,
+                    value: data.kpis?.totalProducts || 0,
                     percentage: 0,
                     change: '0%',
                     color: '#10B981',
@@ -50,7 +55,7 @@ const AnalyticsPage: React.FC = () => {
                 {
                     id: 3,
                     title: t('dashboard.kpi.totalOrders'),
-                    value: 0,
+                    value: data.kpis?.totalOrders || 0,
                     percentage: 0,
                     change: '0%',
                     color: '#7C5CFF',
@@ -58,19 +63,23 @@ const AnalyticsPage: React.FC = () => {
                 {
                     id: 4,
                     title: t('dashboard.kpi.reservations'),
-                    value: 0,
+                    value: data.kpis?.totalReservations || 0,
                     percentage: 0,
                     change: '0%',
                     color: '#F59E0B',
                 },
             ];
 
-            setKpis(fallbackKpis);
-            setWeeklySales([]);
-            setBestSellers([]);
+            setKpis(realKpis);
+            setWeeklySales(data.dailyRevenue || []);
+            setBestSellers(data.topProducts || []);
+
         } catch (err: any) {
             console.error('Failed to load analytics:', err);
-            setError(err.message || 'Failed to load analytics data');
+            // Don't show error UI if we already have data (silent fail for background refresh)
+            if (kpis.length === 0) {
+                setError(err.message || 'Failed to load analytics data');
+            }
         } finally {
             setLoading(false);
         }

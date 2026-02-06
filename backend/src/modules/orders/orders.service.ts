@@ -61,7 +61,9 @@ export class OrdersService {
             throw new AppError(400, 'Only PENDING orders can be confirmed');
         }
 
-        return (await this.repository.updateStatus(id, OrderStatus.CONFIRMED)) as IOrder;
+        // Direct to READY status to streamline workflow (Skip PREPARING step)
+        // This allows 'Assign Driver' to be available immediately
+        return (await this.repository.updateStatus(id, OrderStatus.READY)) as IOrder;
     }
 
     /**

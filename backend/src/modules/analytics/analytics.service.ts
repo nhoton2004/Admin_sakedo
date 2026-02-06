@@ -36,16 +36,18 @@ export class AnalyticsService {
      * Get complete analytics data
      */
     public async getAnalytics(days: number): Promise<AnalyticsDto> {
-        const [dailyRevenue, topProducts, orderStatusDistribution] = await Promise.all([
+        const [dailyRevenue, topProducts, orderStatusDistribution, kpis] = await Promise.all([
             this.repository.getDailyRevenue(days),
             this.repository.getTopProducts(10),
             this.repository.getOrderStatusDistribution(),
+            this.repository.getKPIs(),
         ]);
 
         return {
             dailyRevenue,
             topProducts,
             orderStatusDistribution,
+            kpis,
         };
     }
 }

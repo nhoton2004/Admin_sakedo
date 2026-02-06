@@ -4,7 +4,7 @@ export const CreateUserSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     email: z.string().email('Invalid email format'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
-    role: z.enum(['DRIVER']).default('DRIVER'), // Admin can only create drivers
+    role: z.enum(['DRIVER', 'USER']).default('USER'), // Admin can create DRIVER or USER
 });
 
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;

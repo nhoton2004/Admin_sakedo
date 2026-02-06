@@ -68,4 +68,32 @@ export class UsersController {
             });
         }
     };
+
+    /**
+     * PATCH /admin/users/:id
+     */
+    public update = async (req: AuthRequest, res: Response): Promise<void> => {
+        try {
+            const user = await this.service.update(req.params.id, req.body);
+            res.json(user);
+        } catch (error: any) {
+            res.status(error.statusCode || 500).json({
+                message: error.message || 'Failed to update user',
+            });
+        }
+    };
+
+    /**
+     * DELETE /admin/users/:id
+     */
+    public delete = async (req: AuthRequest, res: Response): Promise<void> => {
+        try {
+            await this.service.delete(req.params.id);
+            res.status(204).send();
+        } catch (error: any) {
+            res.status(error.statusCode || 500).json({
+                message: error.message || 'Failed to delete user',
+            });
+        }
+    };
 }

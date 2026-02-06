@@ -1,4 +1,5 @@
-import { Order } from '../../models';
+import { Order, Product, Category, Reservation } from '../../models';
+import mongoose from 'mongoose';
 import { DailyRevenueDto, TopProductDto, OrderStatusDistributionDto } from './analytics.dto';
 
 /**
@@ -109,5 +110,23 @@ export class AnalyticsRepository {
             count: counts[index],
             percentage: total > 0 ? Math.round((counts[index] / total) * 100) : 0,
         }));
+    }
+    /**
+     * Get KPI counts (Categories, Products, Orders, Reservations)
+     */
+    public async getKPIs() {
+        const [totalCategories, totalProducts, totalOrders, totalReservations] = await Promise.all([
+            Category.countDocuments(),
+            Product.countDocuments(),
+            Order.countDocuments(),
+            Reservation.countDocuments()
+        ]);
+
+        return {
+            totalCategories,
+            totalProducts,
+            totalOrders,
+            totalReservations
+        };
     }
 }

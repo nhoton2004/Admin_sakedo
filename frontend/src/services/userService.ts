@@ -5,7 +5,7 @@ export interface CreateUserDto {
     name: string;
     email: string;
     password: string;
-    role: 'DRIVER';
+    role: 'DRIVER' | 'USER';
 }
 
 export interface UserFilters {
@@ -32,5 +32,14 @@ export class UserService {
     static async toggleActive(id: string): Promise<User> {
         const response = await apiClient.patch<User>(`/admin/users/${id}/toggle-active`);
         return response.data;
+    }
+
+    static async update(id: string, data: Partial<User & { password?: string }>): Promise<User> {
+        const response = await apiClient.patch<User>(`/admin/users/${id}`, data);
+        return response.data;
+    }
+
+    static async delete(id: string): Promise<void> {
+        await apiClient.delete(`/admin/users/${id}`);
     }
 }

@@ -9,8 +9,11 @@ export class ProductsRepository implements IProductRepository {
     /**
      * Find all products with optional filters
      */
+    /**
+     * Find all products with optional filters
+     */
     public async findAll(filters: ProductFilters): Promise<IProduct[]> {
-        const query: any = {};
+        const query: any = { isDeleted: { $ne: true } }; // Exclude deleted products by default
 
         if (filters.search) {
             query.$or = [
@@ -85,9 +88,13 @@ export class ProductsRepository implements IProductRepository {
     }
 
     /**
-     * Soft delete
+     * Soft delete - marks product as deleted
      */
     public async softDelete(id: string): Promise<IProduct | null> {
-        return this.toggleActive(id, false);
+        return Product.findByIdAndUpdate(
+            id,
+            { isDeleted: true },
+            { new: true }
+        ).exec();
     }
 }

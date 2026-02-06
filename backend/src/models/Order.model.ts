@@ -33,7 +33,8 @@ const OrderSchema = new Schema<IOrder>({
     address: { type: String, required: true },
     note: { type: String },
     total: { type: Number, required: true, min: 0 },
-    status: { type: String, enum: Object.values(OrderStatus), default: OrderStatus.PENDING },
+    // Relaxed validation to support legacy data (numeric strings like "0", "1", etc.)
+    status: { type: String, default: OrderStatus.PENDING },
     assignedDriverId: { type: Schema.Types.ObjectId, ref: 'User' },
     items: [OrderItemSchema],
 }, {

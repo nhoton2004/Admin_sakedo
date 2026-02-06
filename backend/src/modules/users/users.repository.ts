@@ -43,14 +43,25 @@ export class UsersRepository implements IUserRepository {
     /**
      * Create user
      */
+    /**
+     * Create user
+     */
     public async create(data: {
         name: string;
         email: string;
+        phone?: string;
         passwordHash: string;
         role: 'ADMIN' | 'DRIVER' | 'USER';
     }): Promise<IUser> {
         const user = new User(data);
         return user.save();
+    }
+
+    /**
+     * Delete user
+     */
+    public async delete(id: string): Promise<IUser | null> {
+        return User.findByIdAndDelete(id).exec();
     }
 
     /**

@@ -6,7 +6,7 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Input } from '../components/ui/Input';
-import { ChevronRight, Plus, Edit2, Trash2, Star, Search } from 'lucide-react';
+import { ChevronRight, Plus, Edit2, Trash2, Star, Search, Eye, EyeOff } from 'lucide-react';
 
 const ProductsPage: React.FC = () => {
     const { t } = useTranslation();
@@ -49,9 +49,8 @@ const ProductsPage: React.FC = () => {
     const loadProducts = async () => {
         try {
             const data = await ProductService.getAll(filters);
-            // Only show active products (filter out soft-deleted ones)
-            const activeProducts = data.filter(p => p.isActive !== false);
-            setProducts(activeProducts);
+            // Do not filter out inactive products on client side, let the backend/filters handle it
+            setProducts(data);
         } finally {
             setLoading(false);
         }
@@ -89,6 +88,16 @@ const ProductsPage: React.FC = () => {
             isFeatured: product.isFeatured,
         });
         setShowModal(true);
+    };
+
+    const handleToggleActive = async (id: string) => {
+        try {
+            await ProductService.toggleActive(id);
+            await loadProducts();
+        } catch (error) {
+            console.error('Failed to toggle active:', error);
+            alert('Không thể cập nhật trạng thái hoạt động.');
+        }
     };
 
     const handleToggleFeatured = async (id: string) => {
@@ -216,6 +225,13 @@ const ProductsPage: React.FC = () => {
 
                             {/* Actions */}
                             <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handleToggleActive(product.id)}
+                                    className={`p-2 rounded-lg transition-colors ${product.isActive ? 'text-green-600 hover:bg-green-50' : 'text-neutral-400 hover:bg-neutral-100'}`}
+                                    title={product.isActive ? t('common.active') : t('common.inactive')}
+                                >
+                                    {product.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                </button>
                                 <button
                                     onClick={() => handleEdit(product)}
                                     className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-1"

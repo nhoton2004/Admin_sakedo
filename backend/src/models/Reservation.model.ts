@@ -21,6 +21,16 @@ const ReservationSchema = new Schema<IReservation>({
 }, {
     timestamps: true,
     collection: 'reservations',
+    toJSON: {
+        virtuals: true,
+        transform: (_doc, ret) => {
+            const obj: any = ret;
+            obj.id = obj._id.toString();
+            delete obj._id;
+            delete obj.__v;
+            return obj;
+        }
+    }
 });
 
 export const Reservation = mongoose.model<IReservation>('Reservation', ReservationSchema);
