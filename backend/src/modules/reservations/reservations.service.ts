@@ -1,4 +1,5 @@
 import { IReservation } from '../../models';
+import Booking from '../../models/Booking.model'; // Import Booking model
 import { AppError } from '../../common/middleware/error.middleware';
 import { ReservationFilters } from './reservations.dto';
 import { ReservationsRepository } from './reservations.repository';
@@ -6,6 +7,7 @@ import { ReservationStatus } from '../../common/types/enums';
 
 /**
  * Service for reservation business logic
+ * Implements Dual Write to sync 'reservations' (Admin) with 'bookings' (App)
  */
 export class ReservationsService {
     private repository: ReservationsRepository;
@@ -19,6 +21,37 @@ export class ReservationsService {
      */
     public async getAll(filters: ReservationFilters): Promise<IReservation[]> {
         return this.repository.findAll(filters);
+    }
+
+    /**
+     * Helper to sync status to bookings collection
+     */
+    private async syncStatusToBooking(reservation: IReservation, newStatus: string) {
+        try {
+            // Map Admin status to App status
+            let bookingStatus = 'PENDING';
+            if (newStatus === ReservationStatus.CONFIRMED) bookingStatus = 'CONFIRMED';
+            if (newStatus === ReservationStatus.COMPLETED) bookingStatus = 'COMPLETED';
+            if (newStatus === ReservationStatus.CANCELED) bookingStatus = 'CANCELLED'; // Note spelling: CANCELLED (2 L's typically)
+
+            // Try to find matching booking by phone and date (fuzzy match)
+            // Or ideally store bookingId in reservation. For now we try fuzzy match.
+            const startOfDay = new Date(reservation.datetime);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(reservation.datetime);
+            endOfDay.setHours(23, 59, 59, 999);
+
+            await Booking.updateOne(
+                {
+                    phone: reservation.phone,
+                    bookingDate: { $gte: startOfDay, $lte: endOfDay }
+                },
+                { $set: { status: bookingStatus } }
+            );
+            console.log(`✅ Synced reservation status to 'bookings': ${bookingStatus}`);
+        } catch (error) {
+            console.error(`❌ Failed to sync reservation status:`, error);
+        }
     }
 
     /**
@@ -36,7 +69,10 @@ export class ReservationsService {
             throw new AppError(400, 'Only NEW reservations can be confirmed');
         }
 
-        return (await this.repository.updateStatus(id, ReservationStatus.CONFIRMED)) as IReservation;
+        const updated = (await this.repository.updateStatus(id, ReservationStatus.CONFIRMED)) as IReservation;
+        await this.syncStatusToBooking(updated, ReservationStatus.CONFIRMED);
+
+        return updated;
     }
 
     /**
@@ -54,7 +90,10 @@ export class ReservationsService {
             throw new AppError(400, 'Only NEW or CONFIRMED reservations can be canceled');
         }
 
-        return (await this.repository.updateStatus(id, ReservationStatus.CANCELED)) as IReservation;
+        const updated = (await this.repository.updateStatus(id, ReservationStatus.CANCELED)) as IReservation;
+        await this.syncStatusToBooking(updated, ReservationStatus.CANCELED);
+
+        return updated;
     }
 
     /**
@@ -72,6 +111,9 @@ export class ReservationsService {
             throw new AppError(400, 'Only CONFIRMED reservations can be completed');
         }
 
-        return (await this.repository.updateStatus(id, ReservationStatus.COMPLETED)) as IReservation;
+        const updated = (await this.repository.updateStatus(id, ReservationStatus.COMPLETED)) as IReservation;
+        await this.syncStatusToBooking(updated, ReservationStatus.COMPLETED);
+
+        return updated;
     }
 }

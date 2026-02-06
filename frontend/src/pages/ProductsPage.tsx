@@ -28,6 +28,13 @@ const ProductsPage: React.FC = () => {
     useEffect(() => {
         loadCategories();
         loadProducts();
+
+        // Auto-refresh every 10 seconds to sync with MongoDB changes
+        const refreshInterval = setInterval(() => {
+            loadProducts();
+        }, 10000);
+
+        return () => clearInterval(refreshInterval);
     }, [filters]);
 
     const loadCategories = async () => {

@@ -38,6 +38,14 @@ export const DriversPage: React.FC = () => {
 
     useEffect(() => {
         loadData();
+
+        // Auto-refresh every 10 seconds to sync with MongoDB changes
+        const refreshInterval = setInterval(() => {
+            loadData();
+        }, 10000); // 10 seconds
+
+        // Cleanup interval on unmount
+        return () => clearInterval(refreshInterval);
     }, []);
 
     const loadData = async () => {
@@ -147,7 +155,7 @@ export const DriversPage: React.FC = () => {
                     <div>
                         <p className="text-sm text-neutral-500">Tổng doanh thu</p>
                         <h3 className="text-2xl font-bold text-neutral-900">
-                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact' }).format(stats.totalEarnings)}
+                            {stats.totalEarnings.toLocaleString('vi-VN')} ₫
                         </h3>
                     </div>
                 </Card>
@@ -186,8 +194,8 @@ export const DriversPage: React.FC = () => {
                                     <button
                                         onClick={() => handleToggleActive(driver.id)}
                                         className={`p-2 rounded-lg transition-colors ${driver.isActive
-                                                ? 'text-orange-600 hover:bg-orange-50'
-                                                : 'text-green-600 hover:bg-green-50'
+                                            ? 'text-orange-600 hover:bg-orange-50'
+                                            : 'text-green-600 hover:bg-green-50'
                                             }`}
                                         title={driver.isActive ? 'Tạm dừng' : 'Kích hoạt'}
                                     >
@@ -226,7 +234,7 @@ export const DriversPage: React.FC = () => {
                                 <div>
                                     <p className="text-xs text-neutral-500 text-center">Thu nhập</p>
                                     <p className="font-bold text-primary text-center">
-                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact' }).format(driver.totalEarnings || 0)}
+                                        {(driver.totalEarnings || 0).toLocaleString('vi-VN')} ₫
                                     </p>
                                 </div>
                                 <div>

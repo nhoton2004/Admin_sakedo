@@ -15,6 +15,13 @@ const ReservationsPage: React.FC = () => {
 
     useEffect(() => {
         loadReservations();
+
+        // Auto-refresh every 10 seconds to sync with MongoDB changes
+        const refreshInterval = setInterval(() => {
+            loadReservations();
+        }, 10000);
+
+        return () => clearInterval(refreshInterval);
     }, [filters]);
 
     const loadReservations = async () => {

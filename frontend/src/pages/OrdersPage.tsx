@@ -35,6 +35,13 @@ const OrdersPage: React.FC = () => {
     useEffect(() => {
         loadOrders();
         loadDrivers();
+
+        // Auto-refresh every 10 seconds to sync with MongoDB changes
+        const refreshInterval = setInterval(() => {
+            loadOrders();
+        }, 10000);
+
+        return () => clearInterval(refreshInterval);
     }, [filters]);
 
     const loadOrders = async () => {
